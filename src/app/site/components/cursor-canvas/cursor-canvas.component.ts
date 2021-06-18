@@ -7,7 +7,7 @@ import {
 } from '@angular/core';
 
 @Component({
-  selector: 'app-cursor-canvas',
+  selector: 'ngx-cursor-canvas',
   templateUrl: './cursor-canvas.component.html',
   styleUrls: ['./cursor-canvas.component.scss'],
 })

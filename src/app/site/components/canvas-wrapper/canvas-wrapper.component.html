@@ -5,10 +5,10 @@
     (mousemove)="onMouseMove($event)"
     (mousedown)="onMouseDown()"
   >
-    <app-cursor-canvas></app-cursor-canvas>
-    <app-preview-canvas></app-preview-canvas>
+    <ngx-cursor-canvas></ngx-cursor-canvas>
+    <ngx-preview-canvas></ngx-preview-canvas>
     <ng-container *ngFor="let canvas of planes">
-      <app-canvas [plane]="canvas"></app-canvas>
+      <ngx-canvas [plane]="canvas"></ngx-canvas>
     </ng-container>
   </div>
 </div>

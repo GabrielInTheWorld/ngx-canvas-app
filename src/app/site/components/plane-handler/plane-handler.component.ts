@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CanvasService } from '../../services/canvas.service';
 
 @Component({
-  selector: 'app-plane-handler',
+  selector: 'ngx-plane-handler',
   templateUrl: './plane-handler.component.html',
   styleUrls: ['./plane-handler.component.scss'],
 })

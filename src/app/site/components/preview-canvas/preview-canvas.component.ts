@@ -9,7 +9,7 @@ import { BaseComponent } from '../../base/base.component';
 import { CanvasService } from '../../services/canvas.service';
 
 @Component({
-  selector: 'app-preview-canvas',
+  selector: 'ngx-preview-canvas',
   templateUrl: './preview-canvas.component.html',
   styleUrls: ['./preview-canvas.component.scss'],
 })

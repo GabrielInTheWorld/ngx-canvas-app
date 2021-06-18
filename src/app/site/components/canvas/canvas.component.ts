@@ -11,7 +11,7 @@ import { BaseComponent } from '../../base/base.component';
 import { CanvasService } from '../../services/canvas.service';
 
 @Component({
-  selector: 'app-canvas',
+  selector: 'ngx-canvas',
   templateUrl: './canvas.component.html',
   styleUrls: ['./canvas.component.scss'],
 })

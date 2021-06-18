@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CanvasService } from '../../services/canvas.service';
 
 @Component({
-  selector: 'app-canvas-wrapper',
+  selector: 'ngx-canvas-wrapper',
   templateUrl: './canvas-wrapper.component.html',
   styleUrls: ['./canvas-wrapper.component.scss'],
 })
