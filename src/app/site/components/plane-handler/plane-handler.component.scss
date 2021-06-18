@@ -1,0 +1,21 @@
+:host {
+  flex: 1;
+  height: 100%;
+}
+
+.app-plane-handler {
+  height: 100%;
+
+  .plane-layering {
+    height: calc(100% - 60px);
+
+    .plane-pseudo-element {
+      height: 40px;
+      border-bottom: 1px solid #ccc;
+    }
+  }
+
+  .action-wrapper {
+    height: 60px;
+  }
+}

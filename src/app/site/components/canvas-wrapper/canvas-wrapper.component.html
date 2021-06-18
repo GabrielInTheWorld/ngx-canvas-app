@@ -1,0 +1,14 @@
+<div class="app-canvas-wrapper">
+  <div
+    class="content-wrapper"
+    (mouseup)="onMouseUp()"
+    (mousemove)="onMouseMove($event)"
+    (mousedown)="onMouseDown()"
+  >
+    <app-cursor-canvas></app-cursor-canvas>
+    <app-preview-canvas></app-preview-canvas>
+    <ng-container *ngFor="let canvas of planes">
+      <app-canvas [plane]="canvas"></app-canvas>
+    </ng-container>
+  </div>
+</div>

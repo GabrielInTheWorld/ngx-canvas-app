@@ -1,0 +1,13 @@
+<div class="app-plane-handler">
+  <div class="plane-layering">
+    <div
+      class="plane-pseudo-element"
+      *ngFor="let plane of planes; index as index"
+    >
+      Ebene: {{ index + 1 }}
+    </div>
+  </div>
+  <div class="action-wrapper">
+    <button (click)="onAdd()">Hinzufügen</button>
+  </div>
+</div>

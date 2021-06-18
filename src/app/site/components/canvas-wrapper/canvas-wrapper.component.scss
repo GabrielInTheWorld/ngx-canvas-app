@@ -1,0 +1,17 @@
+:host {
+  flex: 2;
+  height: 100%;
+
+  border-right: 1px solid;
+}
+
+.app-canvas-wrapper {
+  height: 100%;
+
+  .content-wrapper {
+    // height: 100%;
+    width: 600px;
+    height: 600px;
+    position: relative;
+  }
+}
