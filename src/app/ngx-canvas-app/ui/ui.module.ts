@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { NgModule, Type } from '@angular/core';
+import { MaterialDesignModule } from '../material-design/material-design.module';
 import { CanvasWrapperComponent } from './components/canvas-wrapper/canvas-wrapper.component';
 import { CanvasComponent } from './components/canvas/canvas.component';
 import { CursorCanvasComponent } from './components/cursor-canvas/cursor-canvas.component';
@@ -17,6 +18,6 @@ const declarations: any[] | Type<any>[] = [
 @NgModule({
   declarations: declarations,
   exports: [...declarations],
-  imports: [CommonModule],
+  imports: [CommonModule, MaterialDesignModule],
 })
-export class SiteModule {}
+export class UiModule {}
