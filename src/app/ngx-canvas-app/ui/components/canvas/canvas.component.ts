@@ -8,7 +8,7 @@ import {
 } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { BaseComponent } from '../../base/base.component';
-import { CanvasService } from '../../services/canvas.service';
+import { CanvasService, Plane } from '../../services/canvas.service';
 
 @Component({
   selector: 'ngx-canvas',
@@ -23,7 +23,11 @@ export class CanvasComponent
   private canvas: ElementRef<HTMLCanvasElement> | null = null;
 
   @Input()
-  public plane: any = {};
+  public plane!: Plane;
+
+  public get isVisible(): boolean {
+    return this.plane.visible;
+  }
 
   private set isActivePlane(is: boolean) {
     if (!this._isActivePlane && is) {
@@ -47,7 +51,7 @@ export class CanvasComponent
   ngOnInit(): void {
     this.subscriptions.push(
       this.canvasService.activePlane.subscribe((id) => {
-        this.isActivePlane = id === this.plane.id;
+        this.isActivePlane = id === this.plane?.id;
       })
     );
   }

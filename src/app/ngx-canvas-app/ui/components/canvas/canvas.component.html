@@ -1,1 +1,6 @@
-<canvas #canvas [width]="plane.width" [height]="plane.height"></canvas>
+<canvas
+  #canvas
+  [ngClass]="{ 'has-background': plane.id === 0, 'is-not-visible': !isVisible }"
+  [width]="plane.width"
+  [height]="plane.height"
+></canvas>

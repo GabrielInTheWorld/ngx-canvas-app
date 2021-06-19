@@ -1,4 +1,11 @@
 canvas {
-  background-color: white;
   position: absolute;
+
+  &.has-background {
+    background-color: white;
+  }
+
+  &.is-not-visible {
+    display: none;
+  }
 }

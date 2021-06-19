@@ -1,11 +1,16 @@
 <div class="app-plane-handler">
-  <div class="plane-layering">
-    <div
-      class="plane-pseudo-element"
-      *ngFor="let plane of planes; index as index"
-    >
-      Ebene: {{ index + 1 }}
-    </div>
+  <div
+    class="plane-layering"
+    cdkDropList
+    [cdkDropListData]="planes"
+    (cdkDropListDropped)="onDrop($event)"
+  >
+    <ngx-plane-module
+      *ngFor="let plane of planes"
+      [plane]="plane"
+      (choosePlane)="onClick($event)"
+      (changeVisibility)="onChangeVisibility($event)"
+    ></ngx-plane-module>
   </div>
   <div class="action-wrapper">
     <button (click)="onAdd()">Hinzufügen</button>

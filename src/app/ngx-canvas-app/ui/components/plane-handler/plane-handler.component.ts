@@ -1,5 +1,6 @@
+import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { Component, OnInit } from '@angular/core';
-import { CanvasService } from '../../services/canvas.service';
+import { CanvasService, Plane } from '../../services/canvas.service';
 
 @Component({
   selector: 'ngx-plane-handler',
@@ -7,7 +8,7 @@ import { CanvasService } from '../../services/canvas.service';
   styleUrls: ['./plane-handler.component.scss'],
 })
 export class PlaneHandlerComponent implements OnInit {
-  public planes: any[] = [];
+  public planes: Plane[] = [];
 
   private nextId = 1;
 
@@ -18,8 +19,35 @@ export class PlaneHandlerComponent implements OnInit {
   }
 
   public onAdd(): void {
-    this.canvasService.planes.next(
-      this.planes.concat({ id: this.nextId++, width: 600, height: 600 })
+    for (let i = 0; i < 500; ++i) {
+      const temp = this.planes;
+      temp.unshift({
+        id: this.nextId++,
+        width: 600,
+        height: 600,
+        visible: true,
+      });
+      this.canvasService.planes.next(temp);
+    }
+  }
+
+  public onDrop(event: CdkDragDrop<Plane[], Plane>): void {
+    const temp = this.planes;
+    moveItemInArray(temp, event.previousIndex, event.currentIndex);
+    this.canvasService.planes.next(temp);
+  }
+
+  public onClick(event: Plane): void {
+    console.log('event:', event);
+    this.canvasService.activePlane.next(event.id);
+  }
+
+  public onChangeVisibility(event: Plane): void {
+    const plane = this.canvasService.planes.value.find(
+      (plane) => event.id === plane.id
     );
+    if (plane) {
+      plane.visible = !plane.visible;
+    }
   }
 }
