@@ -6,6 +6,7 @@ export interface Plane {
   width: number;
   height: number;
   visible: boolean;
+  index: number;
 }
 
 export interface DrawPoint {
@@ -18,7 +19,7 @@ export interface DrawPoint {
 })
 export class CanvasService {
   public readonly planes = new BehaviorSubject<Plane[]>([
-    { id: 0, width: 600, height: 600, visible: true },
+    { id: 0, width: 600, height: 600, visible: true, index: 0 },
   ]);
 
   public readonly activePlane = new BehaviorSubject<number>(0);

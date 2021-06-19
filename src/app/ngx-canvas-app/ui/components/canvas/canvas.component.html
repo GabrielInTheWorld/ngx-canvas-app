@@ -1,6 +1,7 @@
 <canvas
   #canvas
   [ngClass]="{ 'has-background': plane.id === 0, 'is-not-visible': !isVisible }"
+  [ngStyle]="{ zIndex: plane.index }"
   [width]="plane.width"
   [height]="plane.height"
 ></canvas>

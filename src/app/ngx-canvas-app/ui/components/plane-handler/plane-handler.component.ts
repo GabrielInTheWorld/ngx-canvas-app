@@ -21,11 +21,13 @@ export class PlaneHandlerComponent implements OnInit {
   public onAdd(): void {
     for (let i = 0; i < 500; ++i) {
       const temp = this.planes;
+      const currentIndex = this.nextId++;
       temp.unshift({
-        id: this.nextId++,
+        id: currentIndex,
         width: 600,
         height: 600,
         visible: true,
+        index: currentIndex,
       });
       this.canvasService.planes.next(temp);
     }
@@ -34,11 +36,11 @@ export class PlaneHandlerComponent implements OnInit {
   public onDrop(event: CdkDragDrop<Plane[], Plane>): void {
     const temp = this.planes;
     moveItemInArray(temp, event.previousIndex, event.currentIndex);
+    this.sortPlanes(temp);
     this.canvasService.planes.next(temp);
   }
 
   public onClick(event: Plane): void {
-    console.log('event:', event);
     this.canvasService.activePlane.next(event.id);
   }
 
@@ -49,5 +51,13 @@ export class PlaneHandlerComponent implements OnInit {
     if (plane) {
       plane.visible = !plane.visible;
     }
+  }
+
+  private sortPlanes(planes: Plane[]): Plane[] {
+    let index = planes.length - 1;
+    for (const plane of planes) {
+      plane.index = index--;
+    }
+    return planes;
   }
 }
