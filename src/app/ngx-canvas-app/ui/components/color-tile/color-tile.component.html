@@ -1,1 +1,6 @@
-<p>color-tile works!</p>
+<div
+  matRipple
+  class="color-tile--wrapper"
+  [ngStyle]="{ 'background-color': backgroundColor, width: size, height: size }"
+  (click)="clickColor.emit(backgroundColor)"
+></div>

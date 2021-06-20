@@ -1,7 +1,15 @@
 <ngx-tab-group>
   <ngx-tab>
     <ng-template ngxTabLabel>Farbfelder</ng-template>
-    <ng-template ngxTabContent>Noch nicht vorhanden</ng-template>
+    <ng-template ngxTabContent>
+      <div class="color-field-wrapper">
+        <ngx-color-tile
+          *ngFor="let color of colors"
+          [backgroundColor]="color"
+          (clickColor)="changeColor($event)"
+        ></ngx-color-tile>
+      </div>
+    </ng-template>
   </ngx-tab>
   <ngx-tab>
     <ng-template ngxTabLabel>Farbwahl</ng-template>
