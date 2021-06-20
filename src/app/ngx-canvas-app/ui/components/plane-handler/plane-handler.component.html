@@ -5,12 +5,14 @@
     [cdkDropListData]="planes"
     (cdkDropListDropped)="onDrop($event)"
   >
-    <ngx-plane-module
-      *ngFor="let plane of planes"
-      [plane]="plane"
-      (choosePlane)="onClick($event)"
-      (changeVisibility)="onChangeVisibility($event)"
-    ></ngx-plane-module>
+    <ng-container *ngFor="let plane of planes">
+      <ngx-plane-module
+        [plane]="plane"
+        (choosePlane)="onClick($event)"
+        (changeVisibility)="onChangeVisibility($event)"
+      ></ngx-plane-module>
+      <mat-divider></mat-divider>
+    </ng-container>
   </div>
   <div class="action-wrapper">
     <button (click)="onAdd()">Hinzufügen</button>

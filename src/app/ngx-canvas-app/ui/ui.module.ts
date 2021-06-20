@@ -8,7 +8,7 @@ import { PlaneHandlerComponent } from './components/plane-handler/plane-handler.
 import { PreviewCanvasComponent } from './components/preview-canvas/preview-canvas.component';
 import { RightSiteComponent } from './components/right-site/right-site.component';
 import { PlaneModuleComponent } from './components/plane-module/plane-module.component';
-import { BackgroundCanvasComponent } from './components/background-canvas/background-canvas.component';
+import { MiniCanvasComponent } from './components/mini-canvas/mini-canvas.component';
 
 const declarations: any[] | Type<any>[] = [
   CanvasComponent,
@@ -18,10 +18,11 @@ const declarations: any[] | Type<any>[] = [
   CursorCanvasComponent,
   RightSiteComponent,
   PlaneModuleComponent,
+  MiniCanvasComponent,
 ];
 
 @NgModule({
-  declarations: [...declarations, BackgroundCanvasComponent],
+  declarations: [...declarations],
   exports: [...declarations],
   imports: [CommonModule, MaterialDesignModule],
 })

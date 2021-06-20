@@ -9,7 +9,7 @@ import { CanvasService, Plane } from '../../services/canvas.service';
 })
 export class PlaneModuleComponent extends BaseComponent implements OnInit {
   @Input()
-  public plane?: Plane;
+  public plane!: Plane;
 
   @Output()
   public choosePlane = new EventEmitter<Plane>();
@@ -18,11 +18,11 @@ export class PlaneModuleComponent extends BaseComponent implements OnInit {
   public changeVisibility = new EventEmitter<Plane>();
 
   public get isActivePlane(): boolean {
-    return this.plane?.id === this._activePlaneId;
+    return this.plane.id === this._activePlaneId;
   }
 
   public get isVisible(): boolean {
-    return this.plane?.visible as boolean;
+    return this.plane.visible as boolean;
   }
 
   private _activePlaneId: number = 0;
