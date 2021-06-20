@@ -1,0 +1,24 @@
+<div class="ngx-tab-group--header">
+  <div
+    *ngFor="let tab of tabs; let i = index"
+    class="tab-group-header"
+    [ngClass]="{
+      'is-active': isTabSelected(i),
+      'rounded-corners': roundedCorners
+    }"
+    (click)="onSelectTab(i, tab)"
+  >
+    <ng-container *ngIf="tab.tabLabelRef">
+      <ng-container *ngTemplateOutlet="tab.tabLabelRef"></ng-container>
+    </ng-container>
+  </div>
+</div>
+<div class="ngx-tab-group--body">
+  <div>
+    <ng-container *ngIf="selectedTab?.tabContentRef">
+      <ng-container
+        *ngTemplateOutlet="selectedTab!.tabContentRef"
+      ></ng-container>
+    </ng-container>
+  </div>
+</div>

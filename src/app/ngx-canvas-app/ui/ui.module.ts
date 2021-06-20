@@ -6,9 +6,10 @@ import { CanvasComponent } from './components/canvas/canvas.component';
 import { CursorCanvasComponent } from './components/cursor-canvas/cursor-canvas.component';
 import { PlaneHandlerComponent } from './components/plane-handler/plane-handler.component';
 import { PreviewCanvasComponent } from './components/preview-canvas/preview-canvas.component';
-import { RightSiteComponent } from './components/right-site/right-site.component';
 import { PlaneModuleComponent } from './components/plane-module/plane-module.component';
 import { MiniCanvasComponent } from './components/mini-canvas/mini-canvas.component';
+import { ColorTileComponent } from './components/color-tile/color-tile.component';
+import { NgxTabModule } from './modules/ngx-tab/ngx-tab.module';
 
 const declarations: any[] | Type<any>[] = [
   CanvasComponent,
@@ -16,14 +17,16 @@ const declarations: any[] | Type<any>[] = [
   PlaneHandlerComponent,
   PreviewCanvasComponent,
   CursorCanvasComponent,
-  RightSiteComponent,
   PlaneModuleComponent,
   MiniCanvasComponent,
+  ColorTileComponent,
 ];
+
+const modules: any[] | Type<any>[] = [NgxTabModule];
 
 @NgModule({
   declarations: [...declarations],
-  exports: [...declarations],
-  imports: [CommonModule, MaterialDesignModule],
+  exports: [...declarations, ...modules],
+  imports: [CommonModule, MaterialDesignModule, ...modules],
 })
 export class UiModule {}

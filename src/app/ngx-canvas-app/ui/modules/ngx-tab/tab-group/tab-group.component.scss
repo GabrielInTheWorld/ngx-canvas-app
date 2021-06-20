@@ -1,0 +1,36 @@
+:host {
+  display: flex;
+  flex-direction: column;
+}
+
+.ngx-tab-group--header {
+  flex: 1;
+  display: flex;
+
+  .tab-group-header {
+    background-color: #b2b2b2;
+    height: 36px;
+    padding: 0 16px;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+
+    &:hover {
+      background-color: #dfdfdf;
+    }
+
+    &.rounded-corners {
+      border-top-left-radius: 6px;
+      border-top-right-radius: 6px;
+    }
+
+    &.is-active {
+      background-color: white;
+    }
+  }
+}
+
+.ngx-tab-group--body {
+  background-color: white;
+  padding: 16px;
+}
