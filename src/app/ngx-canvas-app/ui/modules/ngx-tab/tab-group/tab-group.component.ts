@@ -37,7 +37,7 @@ export class TabGroupComponent implements OnInit, AfterViewInit {
 
   public ngAfterViewInit(): void {
     if (this.tabs?.get(0)) {
-      this.onSelectTab(0, this.tabs.get(0)!);
+      setTimeout(() => this.onSelectTab(0, this.tabs.get(0)!));
     }
   }
 
