@@ -19,12 +19,12 @@ export class TabGroupComponent implements OnInit, AfterViewInit {
     this._tabs = tabs;
   }
 
-  @Input()
-  public roundedCorners = false;
-
   public get tabs(): QueryList<TabComponent> {
     return this._tabs;
   }
+
+  @Input()
+  public roundedCorners = false;
 
   public selectedIndex = 0;
   public selectedTab?: TabComponent = this.tabs?.get(0);

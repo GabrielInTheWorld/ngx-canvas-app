@@ -1,0 +1,13 @@
+:host {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+
+    .view-resizer {
+        display: flex;
+        justify-content: center;
+        border-top: 1px solid rgba(0, 0, 0, 0.32);
+        border-bottom: 1px solid rgba(0, 0, 0, 0.32);
+        cursor: grab;
+    }
+}

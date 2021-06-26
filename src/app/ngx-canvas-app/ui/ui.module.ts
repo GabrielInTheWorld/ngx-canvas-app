@@ -10,23 +10,24 @@ import { PlaneModuleComponent } from './components/plane-module/plane-module.com
 import { MiniCanvasComponent } from './components/mini-canvas/mini-canvas.component';
 import { ColorTileComponent } from './components/color-tile/color-tile.component';
 import { NgxTabModule } from './modules/ngx-tab/ngx-tab.module';
+import { NgxSplitViewModule } from './modules/ngx-split-view/ngx-split-view.module';
 
 const declarations: any[] | Type<any>[] = [
-  CanvasComponent,
-  CanvasWrapperComponent,
-  PlaneHandlerComponent,
-  PreviewCanvasComponent,
-  CursorCanvasComponent,
-  PlaneModuleComponent,
-  MiniCanvasComponent,
-  ColorTileComponent,
+    CanvasComponent,
+    CanvasWrapperComponent,
+    PlaneHandlerComponent,
+    PreviewCanvasComponent,
+    CursorCanvasComponent,
+    PlaneModuleComponent,
+    MiniCanvasComponent,
+    ColorTileComponent
 ];
 
-const modules: any[] | Type<any>[] = [NgxTabModule];
+const modules: any[] | Type<any>[] = [NgxTabModule, NgxSplitViewModule];
 
 @NgModule({
-  declarations: [...declarations],
-  exports: [...declarations, ...modules],
-  imports: [CommonModule, MaterialDesignModule, ...modules],
+    declarations: [...declarations],
+    exports: [...declarations, ...modules],
+    imports: [CommonModule, MaterialDesignModule, ...modules]
 })
 export class UiModule {}

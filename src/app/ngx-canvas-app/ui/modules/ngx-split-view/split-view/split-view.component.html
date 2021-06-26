@@ -1,0 +1,15 @@
+<ng-container *ngFor="let container of containers; let index = index; let last = last">
+    <div id="view-container--{{ index }}" class="view-container">
+        <ng-container *ngTemplateOutlet="container.content"></ng-container>
+    </div>
+    <div
+        class="view-resizer"
+        *ngIf="!last"
+        cdkDragLockAxis="y"
+        cdkDrag
+        (cdkDragEnded)="dragEnd($event, index)"
+        (cdkDragMoved)="onDragMove($event, index)"
+    >
+        <mat-icon>drag_handle</mat-icon>
+    </div>
+</ng-container>
