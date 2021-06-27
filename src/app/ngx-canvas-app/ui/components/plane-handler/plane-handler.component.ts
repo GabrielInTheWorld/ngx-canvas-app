@@ -1,6 +1,6 @@
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
-import { CanvasService, Plane } from '../../services/canvas.service';
+import { PlaneService, Plane } from '../../services/plane.service';
 
 @Component({
     selector: 'ngx-plane-handler',
@@ -13,7 +13,7 @@ export class PlaneHandlerComponent implements OnInit {
 
     private nextId = 1;
 
-    constructor(private canvasService: CanvasService) {}
+    constructor(private canvasService: PlaneService) {}
 
     ngOnInit(): void {
         this.canvasService.planes.subscribe(planes => (this.planes = planes));

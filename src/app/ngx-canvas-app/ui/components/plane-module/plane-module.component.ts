@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { BaseComponent } from '../../base/base.component';
-import { CanvasService, Plane } from '../../services/canvas.service';
+import { PlaneService, Plane } from '../../services/plane.service';
 
 @Component({
   selector: 'ngx-plane-module',
@@ -27,7 +27,7 @@ export class PlaneModuleComponent extends BaseComponent implements OnInit {
 
   private _activePlaneId: number = 0;
 
-  public constructor(private canvasService: CanvasService) {
+  public constructor(private canvasService: PlaneService) {
     super();
   }
 
