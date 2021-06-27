@@ -11,6 +11,7 @@ import { MiniCanvasComponent } from './components/mini-canvas/mini-canvas.compon
 import { ColorTileComponent } from './components/color-tile/color-tile.component';
 import { NgxTabModule } from './modules/ngx-tab/ngx-tab.module';
 import { NgxSplitViewModule } from './modules/ngx-split-view/ngx-split-view.module';
+import { IconButtonComponent } from './components/icon-button/icon-button.component';
 
 const declarations: any[] | Type<any>[] = [
     CanvasComponent,
@@ -20,7 +21,8 @@ const declarations: any[] | Type<any>[] = [
     CursorCanvasComponent,
     PlaneModuleComponent,
     MiniCanvasComponent,
-    ColorTileComponent
+    ColorTileComponent,
+    IconButtonComponent
 ];
 
 const modules: any[] | Type<any>[] = [NgxTabModule, NgxSplitViewModule];

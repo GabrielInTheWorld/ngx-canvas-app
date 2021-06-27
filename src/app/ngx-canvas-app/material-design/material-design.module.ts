@@ -4,17 +4,19 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatDividerModule } from '@angular/material/divider';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { MatRippleModule } from '@angular/material/core';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 const modules: any[] | Type<any>[] = [
-  DragDropModule,
-  MatButtonModule,
-  MatIconModule,
-  MatDividerModule,
-  MatRippleModule,
+    DragDropModule,
+    MatButtonModule,
+    MatIconModule,
+    MatDividerModule,
+    MatRippleModule,
+    MatTooltipModule
 ];
 
 @NgModule({
-  imports: [...modules],
-  exports: [...modules],
+    imports: [...modules],
+    exports: [...modules]
 })
 export class MaterialDesignModule {}

@@ -1,15 +1,15 @@
-<div
-  class="ngx-plane-module"
-  [ngClass]="{ 'is-active': isActivePlane }"
-  cdkDrag
->
-  <div class="view-icon">
-    <button mat-icon-button (click)="changeVisibility.emit(plane)">
-      <mat-icon>{{ isVisible ? "visibility" : "visibility_off" }}</mat-icon>
-    </button>
-  </div>
-  <div class="canvas-holder">
-    <ngx-mini-canvas [plane]="plane"></ngx-mini-canvas>
-  </div>
-  <div class="title" (click)="onClick($event)">Ebene: {{ plane?.id }}</div>
+<div class="ngx-plane-module" [ngClass]="{ 'is-active': isActivePlane }" cdkDrag>
+    <div class="view-icon">
+        <ngx-icon-button (click)="changeVisibility.emit(plane)">
+            {{ isVisible ? 'visibility' : 'visibility_off' }}
+        </ngx-icon-button>
+    </div>
+    <div class="canvas-holder">
+        <ngx-mini-canvas [plane]="plane"></ngx-mini-canvas>
+    </div>
+    <div class="title" (click)="onClick($event)">
+        <span> Ebene: {{ plane?.id }} </span>
+        <span class="spacer"></span>
+        <ngx-icon-button matTooltip="Ebene öffnen">lock</ngx-icon-button>
+    </div>
 </div>

@@ -1,0 +1,13 @@
+mat-icon {
+    width: 18px;
+    height: 18px;
+    line-height: 18px;
+    font-size: 18px;
+}
+
+:host {
+    mat-icon,
+    .mat-icon {
+        line-height: 18px;
+    }
+}

@@ -1,20 +1,18 @@
 <div class="app-plane-handler">
-  <div
-    class="plane-layering"
-    cdkDropList
-    [cdkDropListData]="planes"
-    (cdkDropListDropped)="onDrop($event)"
-  >
-    <ng-container *ngFor="let plane of planes">
-      <ngx-plane-module
-        [plane]="plane"
-        (choosePlane)="onClick($event)"
-        (changeVisibility)="onChangeVisibility($event)"
-      ></ngx-plane-module>
-      <mat-divider></mat-divider>
-    </ng-container>
-  </div>
-  <div class="action-wrapper">
-    <button (click)="onAdd()">Hinzufügen</button>
-  </div>
+    <div class="plane-layering" cdkDropList [cdkDropListData]="planes" (cdkDropListDropped)="onDrop($event)">
+        <ng-container *ngFor="let plane of planes">
+            <ngx-plane-module
+                [plane]="plane"
+                (choosePlane)="onClick($event)"
+                (changeVisibility)="onChangeVisibility($event)"
+            ></ngx-plane-module>
+            <mat-divider></mat-divider>
+        </ng-container>
+    </div>
+    <mat-divider></mat-divider>
+    <div class="action-wrapper">
+        <ngx-icon-button (click)="onAdd()" matTooltip="Neue Ebene hinzufügen"> queue </ngx-icon-button>
+        <ngx-icon-button matTooltip="Neuen Ordner hinzufügen">create_new_folder</ngx-icon-button>
+        <ngx-icon-button matTooltip="Aktuelle Ebene löschen">delete</ngx-icon-button>
+    </div>
 </div>
