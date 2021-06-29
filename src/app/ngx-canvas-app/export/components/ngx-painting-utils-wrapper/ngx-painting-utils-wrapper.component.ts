@@ -1,9 +1,10 @@
 import { Component, OnInit } from '@angular/core';
+import { DrawingMode, PlaneService } from 'src/app/ngx-canvas-app/ui/services/plane.service';
 
 export interface UtilsButton {
     label: string;
-    onClick?: (mode: any) => void;
-    mode: any;
+    onClick?: (mode: DrawingMode) => void;
+    mode: DrawingMode;
     icon?: string;
     svgIcon?: string;
 }
@@ -17,36 +18,35 @@ export class NgxPaintingUtilsWrapperComponent implements OnInit {
     public readonly utilsButtons: UtilsButton[] = [
         {
             label: 'Stift',
-            mode: 'pen',
-            // onClick: mode => this.planeDrawService.setDrawingMode(mode),
+            mode: DrawingMode.PEN,
+            onClick: mode => this.planeService.drawingModeEvent.next(mode),
             icon: 'create'
         },
         {
             label: 'Radiergummi',
-            mode: 'eraser',
-            // onClick: mode => this.planeDrawService.setDrawingMode(mode),
-            // svgIcon: mdiEraser
+            mode: DrawingMode.ERASER,
+            onClick: mode => this.planeService.drawingModeEvent.next(mode),
             svgIcon: 'mdi-eraser'
         },
         {
             label: 'Rechteck',
-            mode: 'rect',
-            // icon: 'crop_16_9'
+            mode: DrawingMode.RECTANGLE,
+            onClick: mode => this.planeService.drawingModeEvent.next(mode),
             svgIcon: 'mdi-rectangle-outline'
         },
         {
             label: 'Ellipse',
-            mode: 'circle',
-            // icon: 'circle'
+            mode: DrawingMode.CIRCLE,
+            onClick: mode => this.planeService.drawingModeEvent.next(mode),
             svgIcon: 'mdi-ellipse-outline'
         },
         {
             label: 'Seite leeren',
-            mode: 'delete',
-            // onClick: () => {
-            //     this.planeDrawService.clearSite();
-            //     this.planeDrawService.setDrawingMode('pen');
-            // },
+            mode: DrawingMode.DELETE,
+            onClick: () => {
+                this.planeService.clearSiteEvent.next();
+                this.planeService.drawingModeEvent.next(DrawingMode.PEN);
+            },
             icon: 'delete_outline'
         }
     ];
@@ -54,11 +54,17 @@ export class NgxPaintingUtilsWrapperComponent implements OnInit {
     // @Input()
     // public vertical = true;
 
-    public constructor(/* private planeDrawService: PlaneDrawService */) {}
+    public constructor(private planeService: PlaneService) {}
 
     public ngOnInit(): void {}
 
-    // public isDrawingMode(mode: DrawingMode): boolean {
-    //     return this.planeDrawService.currentDrawingMode === mode;
-    // }
+    public onClick(button: UtilsButton): void {
+        if (button.onClick) {
+            button.onClick(button.mode);
+        }
+    }
+
+    public isDrawingMode(mode: DrawingMode): boolean {
+        return this.planeService.drawingModeEvent.value === mode;
+    }
 }

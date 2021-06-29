@@ -48,4 +48,6 @@ export class PlaneService {
     public readonly drawingModeEvent = new BehaviorSubject<DrawingMode>(DrawingMode.PEN);
 
     public readonly clearPreviewEvent = new Subject<void>();
+
+    public readonly clearSiteEvent = new Subject<void>();
 }
