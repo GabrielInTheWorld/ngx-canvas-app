@@ -1,7 +1,7 @@
 import { AfterViewInit, Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { BaseComponent } from '../../base/base.component';
-import { PlaneService, Plane } from '../../services/plane.service';
+import { PlaneService, Plane, DrawPoint } from '../../services/plane.service';
 
 @Component({
     selector: 'ngx-plane',
@@ -53,7 +53,7 @@ export class PlaneComponent extends BaseComponent implements OnInit, AfterViewIn
     }
 
     private addEventListener(): void {
-        this.drawSubscription = this.canvasService.drawEvent.subscribe(points => this.onDraw(points));
+        this.drawSubscription = this.canvasService.drawEvent.subscribe(point => this.onDraw(point));
     }
 
     private removeEventListener(): void {
@@ -63,15 +63,18 @@ export class PlaneComponent extends BaseComponent implements OnInit, AfterViewIn
         }
     }
 
-    private onDraw(points: { x: number; y: number }[]): void {
-        let firstPoint = points[0];
-        points.forEach(point => {
+    private onDraw(point: DrawPoint): void {
+        const coordinates = point.nextCoordinates;
+        let firstPoint = coordinates[0];
+        coordinates.forEach(coordinate => {
+            this.context!.lineJoin = 'round';
+            this.context!.strokeStyle = point.color;
             this.context?.beginPath();
             this.context?.moveTo(firstPoint.x, firstPoint.y);
-            this.context?.lineTo(point.x, point.y);
+            this.context?.lineTo(coordinate.x, coordinate.y);
             this.context?.stroke();
             this.context?.closePath();
-            firstPoint = point;
+            firstPoint = coordinate;
         });
     }
 }

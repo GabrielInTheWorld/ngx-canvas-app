@@ -1,5 +1,6 @@
+import { ColorService } from 'src/app/ngx-canvas-app/ui/services/color.service';
 import { Component, OnInit } from '@angular/core';
-import { Plane, PlaneService } from '../../services/plane.service';
+import { Coordinate, DrawPoint, Plane, PlaneService } from '../../services/plane.service';
 
 @Component({
     selector: 'ngx-plane-wrapper',
@@ -10,12 +11,12 @@ export class PlaneWrapperComponent implements OnInit {
     public planes: Plane[] = [];
 
     private isDrawing = false;
-    private points: { x: number; y: number }[] = [];
+    private coordinates: Coordinate[] = [];
 
-    constructor(private canvasService: PlaneService) {}
+    constructor(private planeService: PlaneService, private colorService: ColorService) {}
 
     ngOnInit(): void {
-        this.canvasService.planes.subscribe(planes => (this.planes = planes));
+        this.planeService.planes.subscribe(planes => (this.planes = planes));
     }
 
     public onMouseDown(): void {
@@ -23,19 +24,27 @@ export class PlaneWrapperComponent implements OnInit {
     }
 
     public onMouseMove(event: MouseEvent): void {
-        const point = { x: event.offsetX, y: event.offsetY };
+        const coordinate = { x: event.offsetX, y: event.offsetY };
         if (this.isDrawing) {
-            this.canvasService.previewDrawEvent.next(point);
-            this.points.push(point);
+            this.planeService.previewDrawEvent.next(this.getDrawPoint([coordinate]));
+            this.coordinates.push(coordinate);
         } else {
-            this.canvasService.moveEvent.next(point);
+            this.planeService.moveEvent.next(coordinate);
         }
     }
 
     public onMouseUp(): void {
         this.isDrawing = false;
-        this.canvasService.drawEvent.next(this.points);
-        this.canvasService.clearPreviewEvent.next();
-        this.points = [];
+        this.planeService.drawEvent.next(this.getDrawPoint(this.coordinates));
+        this.planeService.clearPreviewEvent.next();
+        this.coordinates = [];
+    }
+
+    private getDrawPoint(nextCoordinates: Coordinate[]): DrawPoint {
+        return {
+            nextCoordinates,
+            color: this.colorService.currentColor,
+            mode: this.planeService.drawingModeEvent.value
+        };
     }
 }

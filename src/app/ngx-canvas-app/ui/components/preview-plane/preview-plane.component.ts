@@ -1,6 +1,6 @@
 import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { BaseComponent } from '../../base/base.component';
-import { PlaneService } from '../../services/plane.service';
+import { DrawPoint, PlaneService } from '../../services/plane.service';
 
 @Component({
     selector: 'ngx-preview-plane',
@@ -33,13 +33,18 @@ export class PreviewPlaneComponent extends BaseComponent implements OnInit, Afte
         }
     }
 
-    private onPreviewDraw(point: { x: number; y: number }): void {
-        this.context?.beginPath();
-        this.context?.moveTo(this.previousPoint.x, this.previousPoint.y);
-        this.context?.lineTo(point.x, point.y);
-        this.context?.stroke();
-        this.context?.closePath();
-        this.previousPoint = point;
+    private onPreviewDraw(point: DrawPoint): void {
+        if (this.context) {
+            const coordinate = point.nextCoordinates[0];
+            this.context.lineJoin = 'round';
+            this.context.strokeStyle = point.color;
+            this.context.beginPath();
+            this.context.moveTo(this.previousPoint.x, this.previousPoint.y);
+            this.context.lineTo(coordinate.x, coordinate.y);
+            this.context.stroke();
+            this.context.closePath();
+            this.previousPoint = coordinate;
+        }
     }
 
     private onClear(): void {

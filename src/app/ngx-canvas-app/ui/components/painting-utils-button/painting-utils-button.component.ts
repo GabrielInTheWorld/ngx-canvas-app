@@ -1,9 +1,10 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
 
 @Component({
     selector: 'ngx-painting-utils-button',
     templateUrl: './painting-utils-button.component.html',
-    styleUrls: ['./painting-utils-button.component.scss']
+    styleUrls: ['./painting-utils-button.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PaintingUtilsButtonComponent implements OnInit {
     @Input()

@@ -29,6 +29,18 @@ export class NgxPaintingUtilsWrapperComponent implements OnInit {
             svgIcon: 'mdi-eraser'
         },
         {
+            label: 'Rechteck',
+            mode: 'rect',
+            // icon: 'crop_16_9'
+            svgIcon: 'mdi-rectangle-outline'
+        },
+        {
+            label: 'Ellipse',
+            mode: 'circle',
+            // icon: 'circle'
+            svgIcon: 'mdi-ellipse-outline'
+        },
+        {
             label: 'Seite leeren',
             mode: 'delete',
             // onClick: () => {

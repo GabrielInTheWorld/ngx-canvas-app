@@ -1,6 +1,7 @@
 .painting-utils--color-chooser {
     display: flex;
     flex-direction: column;
+    user-select: none;
     // &.vertical {
     //     flex-direction: column;
     // }
