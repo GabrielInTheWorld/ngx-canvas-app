@@ -1,0 +1,71 @@
+.painting-utils--color-chooser {
+    display: flex;
+    flex-direction: column;
+    // &.vertical {
+    //     flex-direction: column;
+    // }
+    // &.horizontal {
+    //     flex-direction: row;
+    // }
+
+    .painting-utils--chooser-tiles {
+        position: relative;
+        margin: 0 2px;
+        $size: 32px;
+        height: $size;
+        width: $size;
+        display: inline-block;
+        .current-color {
+            position: absolute;
+            z-index: 2;
+        }
+        .second-color {
+            position: absolute;
+            z-index: 1;
+            transform: translate(10px, 10px);
+        }
+    }
+}
+
+.painting-utils--chooser-buttons {
+    display: flex;
+    margin: 4px 0;
+    flex-direction: row;
+    // &.vertical {
+    //     margin: 4px 0;
+    //     flex-direction: row;
+    // }
+    // &.horizontal {
+    //     margin: 0 4px;
+    //     flex-direction: column;
+    // }
+
+    $size: 18px;
+    .mini-button {
+        width: $size;
+        height: $size;
+        cursor: pointer;
+
+        .chooser-tiles--preview {
+            .current-color {
+                display: inline-block;
+                transform: translate(2px, -22px);
+            }
+            .second-color {
+                display: inline-block;
+                transform: translate(6px, 2px);
+            }
+        }
+
+        $icon-size: 14px;
+        .mat-icon {
+            width: $icon-size;
+            height: $icon-size;
+            font-size: $icon-size;
+        }
+
+        &:hover {
+            background-color: rgba(0, 0, 0, 0.12);
+        }
+    }
+}

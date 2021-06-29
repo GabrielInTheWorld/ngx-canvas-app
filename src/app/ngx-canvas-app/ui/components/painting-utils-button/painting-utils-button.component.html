@@ -1,0 +1,7 @@
+<div class="painting-utensils-button--wrapper" [ngClass]="{ active: isActive }">
+    <button class="painting-utensils-button" mat-icon-button [matTooltip]="label ?? ''">
+        <mat-icon *ngIf="icon">{{ icon }}</mat-icon>
+        <ngx-icon *ngIf="svgIcon" [path]="svgIcon"></ngx-icon>
+    </button>
+</div>
+<mat-divider></mat-divider>

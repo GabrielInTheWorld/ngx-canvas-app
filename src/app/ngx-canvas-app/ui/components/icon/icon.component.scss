@@ -1,0 +1,11 @@
+$size: 24px;
+
+:host {
+    display: block;
+    height: $size;
+}
+
+svg {
+    width: $size;
+    height: $size;
+}

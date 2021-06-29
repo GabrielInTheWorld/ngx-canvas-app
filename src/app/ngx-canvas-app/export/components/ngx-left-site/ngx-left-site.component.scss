@@ -1,0 +1,12 @@
+:host {
+    $size: 40px;
+    display: flex;
+    width: $size;
+    height: 100%;
+    border-left: 1px solid rgba(0, 0, 0, 0.32);
+    border-right: 1px solid rgba(0, 0, 0, 0.32);
+
+    .inner-container {
+        padding: 2px;
+    }
+}

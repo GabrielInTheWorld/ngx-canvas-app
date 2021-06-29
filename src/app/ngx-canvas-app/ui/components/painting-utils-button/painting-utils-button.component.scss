@@ -1,0 +1,19 @@
+$size: 36px;
+
+.painting-utensils-button--wrapper {
+    &.active {
+        background-color: #5b75fe;
+    }
+    &.vertical {
+        border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+    }
+    &.horizontal {
+        border-right: 1px solid rgba(0, 0, 0, 0.2);
+    }
+
+    .painting-utensils-button {
+        width: $size;
+        height: $size;
+        line-height: $size;
+    }
+}

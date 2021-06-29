@@ -23,7 +23,7 @@ export class PlaneWrapperComponent implements OnInit {
     }
 
     public onMouseMove(event: MouseEvent): void {
-        const point = { x: event.clientX, y: event.clientY };
+        const point = { x: event.offsetX, y: event.offsetY };
         if (this.isDrawing) {
             this.canvasService.previewDrawEvent.next(point);
             this.points.push(point);

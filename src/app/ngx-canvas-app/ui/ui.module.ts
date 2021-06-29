@@ -12,6 +12,9 @@ import { ColorTileComponent } from './components/color-tile/color-tile.component
 import { NgxTabModule } from './modules/ngx-tab/ngx-tab.module';
 import { NgxSplitViewModule } from './modules/ngx-split-view/ngx-split-view.module';
 import { IconButtonComponent } from './components/icon-button/icon-button.component';
+import { PaintingUtilsButtonComponent } from './components/painting-utils-button/painting-utils-button.component';
+import { PaintingUtilsColorChooserComponent } from './components/painting-utils-color-chooser/painting-utils-color-chooser.component';
+import { IconComponent } from './components/icon/icon.component';
 
 const declarations: any[] | Type<any>[] = [
     PlaneComponent,
@@ -22,7 +25,10 @@ const declarations: any[] | Type<any>[] = [
     PlaneModuleComponent,
     MiniPlaneComponent,
     ColorTileComponent,
-    IconButtonComponent
+    IconButtonComponent,
+    PaintingUtilsButtonComponent,
+    PaintingUtilsColorChooserComponent,
+    IconComponent
 ];
 
 const modules: any[] | Type<any>[] = [NgxTabModule, NgxSplitViewModule];
