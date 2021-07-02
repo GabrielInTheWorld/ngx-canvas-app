@@ -1,5 +1,5 @@
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { PlaneService, Plane } from '../../services/plane.service';
 
 @Component({
@@ -11,42 +11,36 @@ import { PlaneService, Plane } from '../../services/plane.service';
 export class PlaneHandlerComponent implements OnInit {
     public planes: Plane[] = [];
 
-    private nextId = 1;
-
-    constructor(private canvasService: PlaneService) {}
+    constructor(private planeService: PlaneService, private cd: ChangeDetectorRef) {}
 
     ngOnInit(): void {
-        this.canvasService.planes.subscribe(planes => (this.planes = planes));
+        this.planeService.planes.subscribe(planes => {
+            this.planes = planes;
+            this.cd.markForCheck();
+        });
     }
 
     public onAdd(): void {
-        for (let i = 0; i < 500; ++i) {
-            const temp = this.planes;
-            const currentIndex = this.nextId++;
-            temp.unshift({
-                id: currentIndex,
-                width: 600,
-                height: 600,
-                visible: true,
-                index: currentIndex
-            });
-            this.canvasService.planes.next(temp);
-        }
+        this.planeService.addPlane();
+    }
+
+    public onAdd500(): void {
+        this.planeService.addPlane(500);
     }
 
     public onDrop(event: CdkDragDrop<Plane[], Plane>): void {
         const temp = this.planes;
         moveItemInArray(temp, event.previousIndex, event.currentIndex);
         this.sortPlanes(temp);
-        this.canvasService.planes.next(temp);
+        this.planeService.planes.next(temp);
     }
 
     public onClick(event: Plane): void {
-        this.canvasService.activePlane.next(event.id);
+        this.planeService.activePlane.next(event.id);
     }
 
     public onChangeVisibility(event: Plane): void {
-        const plane = this.canvasService.planes.value.find(plane => event.id === plane.id);
+        const plane = this.planeService.planes.value.find(plane => event.id === plane.id);
         if (plane) {
             plane.visible = !plane.visible;
         }

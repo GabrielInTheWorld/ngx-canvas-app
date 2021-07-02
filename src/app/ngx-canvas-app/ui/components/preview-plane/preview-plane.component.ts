@@ -13,15 +13,15 @@ export class PreviewPlaneComponent extends BasePlaneComponent implements OnInit,
 
     private previousPoint = { x: 0, y: 0 };
 
-    constructor(private canvasService: PlaneService) {
+    constructor(private planeService: PlaneService) {
         super();
     }
 
     ngOnInit(): void {
         this.subscriptions.push(
-            this.canvasService.previewDrawEvent.subscribe(nextPoint => this.onPreviewDraw(nextPoint)),
-            this.canvasService.moveEvent.subscribe(point => (this.previousPoint = point)),
-            this.canvasService.clearPreviewEvent.subscribe(() => this.onClear())
+            this.planeService.previewDrawEvent.subscribe(nextPoint => this.onPreviewDraw(nextPoint)),
+            this.planeService.moveEvent.subscribe(point => (this.previousPoint = point)),
+            this.planeService.clearPreviewEvent.subscribe(() => this.onClear())
         );
     }
 

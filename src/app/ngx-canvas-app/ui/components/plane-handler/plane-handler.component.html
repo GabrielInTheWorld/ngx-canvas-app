@@ -11,6 +11,9 @@
     </div>
     <mat-divider></mat-divider>
     <div class="action-wrapper">
+        <ngx-icon-button (click)="onAdd500()" matTooltip="Neue Ebene hinzufügen" matBadge="500">
+            queue
+        </ngx-icon-button>
         <ngx-icon-button (click)="onAdd()" matTooltip="Neue Ebene hinzufügen"> queue </ngx-icon-button>
         <ngx-icon-button matTooltip="Neuen Ordner hinzufügen">create_new_folder</ngx-icon-button>
         <ngx-icon-button matTooltip="Aktuelle Ebene löschen">delete</ngx-icon-button>

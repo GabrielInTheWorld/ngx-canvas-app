@@ -32,13 +32,13 @@ export class PlaneComponent extends BasePlaneComponent implements OnInit, AfterV
 
     private _isActivePlane = false;
 
-    constructor(private canvasService: PlaneService) {
+    constructor(private planeService: PlaneService) {
         super();
     }
 
     ngOnInit(): void {
         this.subscriptions.push(
-            this.canvasService.activePlane.subscribe(id => {
+            this.planeService.activePlane.subscribe(id => {
                 this.isActivePlane = id === this.plane?.id;
             })
         );
@@ -47,11 +47,12 @@ export class PlaneComponent extends BasePlaneComponent implements OnInit, AfterV
     public ngAfterViewInit(): void {
         if (this.canvas?.nativeElement) {
             this.context = this.canvas.nativeElement.getContext('2d');
+            this.rerender();
         }
     }
 
     private addEventListener(): void {
-        this.drawSubscription = this.canvasService.drawEvent.subscribe(point => this.onDraw(point));
+        this.drawSubscription = this.planeService.drawingObservable.subscribe(point => this.onDraw(point));
     }
 
     private removeEventListener(): void {
@@ -81,5 +82,14 @@ export class PlaneComponent extends BasePlaneComponent implements OnInit, AfterV
 
     protected getLastCoordinate(point: DrawPoint): Coordinate {
         return point.nextCoordinates[point.nextCoordinates.length - 1];
+    }
+
+    private rerender(): void {
+        const drawPoints = this.planeService.getFullDrawing(this.plane.id);
+        if (drawPoints) {
+            for (const drawPoint of drawPoints) {
+                this.onDraw(drawPoint);
+            }
+        }
     }
 }

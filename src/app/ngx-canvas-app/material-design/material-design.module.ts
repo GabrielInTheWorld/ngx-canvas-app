@@ -5,6 +5,7 @@ import { MatDividerModule } from '@angular/material/divider';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { MatRippleModule } from '@angular/material/core';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatBadgeModule } from '@angular/material/badge';
 
 const modules: any[] | Type<any>[] = [
     DragDropModule,
@@ -12,7 +13,8 @@ const modules: any[] | Type<any>[] = [
     MatIconModule,
     MatDividerModule,
     MatRippleModule,
-    MatTooltipModule
+    MatTooltipModule,
+    MatBadgeModule
 ];
 
 @NgModule({

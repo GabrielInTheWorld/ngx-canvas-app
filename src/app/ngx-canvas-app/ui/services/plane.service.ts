@@ -1,6 +1,6 @@
 import { Color } from './color.service';
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Subject } from 'rxjs';
+import { BehaviorSubject, Observable, Subject } from 'rxjs';
 
 export enum DrawingMode {
     PEN = 'pen',
@@ -43,11 +43,56 @@ export class PlaneService {
 
     public readonly previewDrawEvent = new Subject<DrawPoint>();
 
-    public readonly drawEvent = new Subject<DrawPoint>();
+    private readonly drawEvent = new Subject<DrawPoint>();
 
     public readonly drawingModeEvent = new BehaviorSubject<DrawingMode>(DrawingMode.PEN);
 
     public readonly clearPreviewEvent = new Subject<void>();
 
     public readonly clearSiteEvent = new Subject<void>();
+
+    public get drawingObservable(): Observable<DrawPoint> {
+        return this.drawEvent.asObservable();
+    }
+
+    private globalStore: { [id: number]: DrawPoint[] } = {};
+
+    private nextId = 1;
+
+    /**
+     * Function to add new planes to the global plane store.
+     *
+     * @param amount Number of planes to be added
+     * @returns The id of the last added plane
+     */
+    public addPlane(amount: number = 1): number {
+        const temp = this.planes.value;
+        let returnValue = 0;
+        for (let i = 0; i < amount; ++i) {
+            const currentIndex = this.nextId++;
+            returnValue = currentIndex;
+            temp.unshift({
+                id: currentIndex,
+                width: 600,
+                height: 600,
+                visible: true,
+                index: currentIndex
+            });
+        }
+        this.planes.next(temp);
+        return returnValue;
+    }
+
+    public addDrawing(id: number, drawing: DrawPoint): void {
+        if (this.globalStore[id]) {
+            this.globalStore[id].push(drawing);
+        } else {
+            this.globalStore[id] = [drawing];
+        }
+        this.drawEvent.next(drawing);
+    }
+
+    public getFullDrawing(id: number): DrawPoint[] | undefined {
+        return this.globalStore[id];
+    }
 }

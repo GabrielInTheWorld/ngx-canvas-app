@@ -1,6 +1,6 @@
 import { ColorService } from 'src/app/ngx-canvas-app/ui/services/color.service';
 import { Component, OnInit } from '@angular/core';
-import { Coordinate, DrawPoint, Plane, PlaneService } from '../../services/plane.service';
+import { Coordinate, DrawingMode, DrawPoint, Plane, PlaneService } from '../../services/plane.service';
 
 @Component({
     selector: 'ngx-plane-wrapper',
@@ -9,6 +9,14 @@ import { Coordinate, DrawPoint, Plane, PlaneService } from '../../services/plane
 })
 export class PlaneWrapperComponent implements OnInit {
     public planes: Plane[] = [];
+
+    private get drawingMode(): DrawingMode {
+        return this.planeService.drawingModeEvent.value;
+    }
+
+    private get activePlaneId(): number {
+        return this.planeService.activePlane.value;
+    }
 
     private isDrawing = false;
     private coordinates: Coordinate[] = [];
@@ -34,8 +42,9 @@ export class PlaneWrapperComponent implements OnInit {
     }
 
     public onMouseUp(): void {
+        this.onBeforeDraw();
         this.isDrawing = false;
-        this.planeService.drawEvent.next(this.getDrawPoint(this.coordinates));
+        this.planeService.addDrawing(this.activePlaneId, this.getDrawPoint(this.coordinates));
         this.planeService.clearPreviewEvent.next();
         this.coordinates = [];
     }
@@ -46,5 +55,15 @@ export class PlaneWrapperComponent implements OnInit {
             color: this.colorService.currentColor,
             mode: this.planeService.drawingModeEvent.value
         };
+    }
+
+    private onBeforeDraw(): void {
+        switch (this.drawingMode) {
+            case DrawingMode.CIRCLE:
+            case DrawingMode.RECTANGLE:
+                const id = this.planeService.addPlane();
+                this.planeService.activePlane.next(id);
+                break;
+        }
     }
 }
