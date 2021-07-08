@@ -39,7 +39,7 @@ export class PlaneService {
 
     public readonly activePlane = new BehaviorSubject<number>(0);
 
-    public readonly moveEvent = new Subject<Coordinate>();
+    public readonly moveEvent = new BehaviorSubject<Coordinate>({ x: 0, y: 0 });
 
     public readonly previewDrawEvent = new Subject<DrawPoint>();
 
@@ -50,6 +50,10 @@ export class PlaneService {
     public readonly clearPreviewEvent = new Subject<void>();
 
     public readonly clearSiteEvent = new Subject<void>();
+
+    public get lastMoveCoordinate(): Coordinate {
+        return this.moveEvent.value;
+    }
 
     public get drawingObservable(): Observable<DrawPoint> {
         return this.drawEvent.asObservable();

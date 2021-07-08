@@ -1,7 +1,7 @@
 import { AfterViewInit, Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { BasePlaneComponent } from '../../base/base-plane.component';
-import { PlaneService, Plane, DrawPoint, DrawingMode } from '../../services/plane.service';
+import { PlaneService, Plane, DrawPoint, DrawingMode, Coordinate } from '../../services/plane.service';
 
 @Component({
     selector: 'ngx-plane',
@@ -49,6 +49,10 @@ export class PlaneComponent extends BasePlaneComponent implements OnInit, AfterV
             this.context = this.canvas.nativeElement.getContext('2d');
             this.rerender();
         }
+    }
+
+    protected getFirstCoordinate(_point: DrawPoint): Coordinate {
+        return this.planeService.lastMoveCoordinate;
     }
 
     private addEventListener(): void {
