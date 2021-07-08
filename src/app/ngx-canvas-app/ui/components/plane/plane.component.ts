@@ -1,7 +1,7 @@
 import { AfterViewInit, Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { BasePlaneComponent } from '../../base/base-plane.component';
-import { PlaneService, Plane, DrawPoint, DrawingMode, Coordinate } from '../../services/plane.service';
+import { PlaneService, Plane, DrawPoint, DrawingMode } from '../../services/plane.service';
 
 @Component({
     selector: 'ngx-plane',
@@ -32,8 +32,8 @@ export class PlaneComponent extends BasePlaneComponent implements OnInit, AfterV
 
     private _isActivePlane = false;
 
-    constructor(private planeService: PlaneService) {
-        super();
+    constructor(planeService: PlaneService) {
+        super(planeService);
     }
 
     ngOnInit(): void {
@@ -67,6 +67,9 @@ export class PlaneComponent extends BasePlaneComponent implements OnInit, AfterV
             case DrawingMode.PEN:
                 this.drawPen(point);
                 break;
+            case DrawingMode.ERASER:
+                this.drawEraser(point);
+                break;
             case DrawingMode.RECTANGLE:
                 this.drawRectangle(point);
                 break;
@@ -76,12 +79,21 @@ export class PlaneComponent extends BasePlaneComponent implements OnInit, AfterV
         }
     }
 
-    protected getFirstCoordinate(point: DrawPoint): Coordinate {
-        return point.nextCoordinates[0];
-    }
-
-    protected getLastCoordinate(point: DrawPoint): Coordinate {
-        return point.nextCoordinates[point.nextCoordinates.length - 1];
+    private drawEraser(point: DrawPoint): void {
+        const coordinates = point.nextCoordinates;
+        let firstPoint = this.previousPoint;
+        coordinates.forEach(coordinate => {
+            this.context!.lineJoin = 'round';
+            this.context!.globalCompositeOperation = 'destination-out';
+            this.context!.lineWidth = 30;
+            this.context?.beginPath();
+            this.context?.moveTo(firstPoint.x, firstPoint.y);
+            this.context?.lineTo(coordinate.x, coordinate.y);
+            this.context?.closePath();
+            this.context?.stroke();
+            firstPoint = coordinate;
+        });
+        this.previousPoint = firstPoint;
     }
 
     private rerender(): void {

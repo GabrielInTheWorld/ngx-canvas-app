@@ -83,11 +83,11 @@ export class PlaneService {
         return returnValue;
     }
 
-    public addDrawing(id: number, drawing: DrawPoint): void {
-        if (this.globalStore[id]) {
-            this.globalStore[id].push(drawing);
+    public addDrawing(planeId: number, drawing: DrawPoint): void {
+        if (this.globalStore[planeId]) {
+            this.globalStore[planeId].push(drawing);
         } else {
-            this.globalStore[id] = [drawing];
+            this.globalStore[planeId] = [drawing];
         }
         this.drawEvent.next(drawing);
     }

@@ -34,8 +34,7 @@ export class PlaneWrapperComponent implements OnInit {
     public onMouseMove(event: MouseEvent): void {
         const coordinate = { x: event.offsetX, y: event.offsetY };
         if (this.isDrawing) {
-            this.planeService.previewDrawEvent.next(this.getDrawPoint([coordinate]));
-            this.coordinates.push(coordinate);
+            this.onDraw(coordinate);
         } else {
             this.planeService.moveEvent.next(coordinate);
         }
@@ -64,6 +63,17 @@ export class PlaneWrapperComponent implements OnInit {
                 const id = this.planeService.addPlane();
                 this.planeService.activePlane.next(id);
                 break;
+        }
+    }
+
+    private onDraw(coordinate: Coordinate): void {
+        switch (this.drawingMode) {
+            case DrawingMode.ERASER:
+                this.planeService.addDrawing(this.activePlaneId, this.getDrawPoint([coordinate]));
+                break;
+            default:
+                this.planeService.previewDrawEvent.next(this.getDrawPoint([coordinate]));
+                this.coordinates.push(coordinate);
         }
     }
 }

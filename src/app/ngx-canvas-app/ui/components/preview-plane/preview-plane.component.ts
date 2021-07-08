@@ -1,6 +1,6 @@
 import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { BasePlaneComponent } from '../../base/base-plane.component';
-import { Coordinate, DrawingMode, DrawPoint, PlaneService } from '../../services/plane.service';
+import { DrawingMode, DrawPoint, PlaneService } from '../../services/plane.service';
 
 @Component({
     selector: 'ngx-preview-plane',
@@ -11,10 +11,10 @@ export class PreviewPlaneComponent extends BasePlaneComponent implements OnInit,
     @ViewChild('previewCanvas')
     private previewCanvas: ElementRef<HTMLCanvasElement> | null = null;
 
-    private previousPoint = { x: 0, y: 0 };
+    protected previousPoint = { x: 0, y: 0 };
 
-    constructor(private planeService: PlaneService) {
-        super();
+    constructor(planeService: PlaneService) {
+        super(planeService);
     }
 
     ngOnInit(): void {
@@ -46,14 +46,6 @@ export class PreviewPlaneComponent extends BasePlaneComponent implements OnInit,
                 this.drawCircle(point);
                 break;
         }
-    }
-
-    protected getFirstCoordinate(_point: DrawPoint): Coordinate {
-        return this.previousPoint;
-    }
-
-    protected getLastCoordinate(point: DrawPoint): Coordinate {
-        return point.nextCoordinates[0];
     }
 
     private onClear(): void {

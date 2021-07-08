@@ -1,5 +1,5 @@
 import { Directive } from '@angular/core';
-import { Coordinate, DrawPoint } from '../services/plane.service';
+import { Coordinate, DrawPoint, PlaneService } from '../services/plane.service';
 import { BaseComponent } from './base.component';
 
 export interface RectParams {
@@ -13,17 +13,26 @@ export interface RectParams {
 export class BasePlaneComponent extends BaseComponent {
     protected context: CanvasRenderingContext2D | null = null;
 
+    protected previousPoint: Coordinate = { x: 0, y: 0 };
+
+    public constructor(protected planeService: PlaneService) {
+        super();
+        this.subscriptions.push(planeService.moveEvent.subscribe(nextPoint => (this.previousPoint = nextPoint)));
+    }
+
     protected drawPen(point: DrawPoint): void {
         const coordinates = point.nextCoordinates;
-        let firstPoint = this.getFirstCoordinate(point);
+        let firstPoint = this.previousPoint;
         coordinates.forEach(coordinate => {
             this.context!.lineJoin = 'round';
             this.context!.strokeStyle = point.color;
+            this.context!.globalCompositeOperation = 'source-over';
+            this.context!.lineWidth = 30;
             this.context?.beginPath();
             this.context?.moveTo(firstPoint.x, firstPoint.y);
             this.context?.lineTo(coordinate.x, coordinate.y);
-            this.context?.stroke();
             this.context?.closePath();
+            this.context?.stroke();
             firstPoint = coordinate;
         });
     }
@@ -68,10 +77,10 @@ export class BasePlaneComponent extends BaseComponent {
     }
 
     protected getFirstCoordinate(_point: DrawPoint): Coordinate {
-        return { x: 0, y: 0 };
+        return this.previousPoint;
     }
 
     protected getLastCoordinate(_point: DrawPoint): Coordinate {
-        return { x: 0, y: 0 };
+        return _point.nextCoordinates[_point.nextCoordinates.length - 1];
     }
 }
