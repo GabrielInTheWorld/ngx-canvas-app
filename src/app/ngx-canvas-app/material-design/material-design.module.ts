@@ -6,6 +6,7 @@ import { DragDropModule } from '@angular/cdk/drag-drop';
 import { MatRippleModule } from '@angular/material/core';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatBadgeModule } from '@angular/material/badge';
+import { ScrollingModule } from '@angular/cdk/scrolling';
 
 const modules: any[] | Type<any>[] = [
     DragDropModule,
@@ -14,7 +15,8 @@ const modules: any[] | Type<any>[] = [
     MatDividerModule,
     MatRippleModule,
     MatTooltipModule,
-    MatBadgeModule
+    MatBadgeModule,
+    ScrollingModule
 ];
 
 @NgModule({

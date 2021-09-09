@@ -1,3 +1,4 @@
+import { PlaneComponent } from './../components/plane/plane.component';
 import { Color } from './color.service';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
@@ -16,6 +17,7 @@ export interface Plane {
     height: number;
     visible: boolean;
     index: number;
+    isBackground: boolean;
 }
 
 export interface Coordinate {
@@ -29,12 +31,16 @@ export interface DrawPoint {
     color: Color;
 }
 
-const BACKGROUND_PLANE: Plane = { id: 0, width: 600, height: 600, visible: true, index: 0 };
+const BACKGROUND_PLANE: Plane = { id: 0, width: 600, height: 600, visible: true, index: 0, isBackground: true };
 
 @Injectable({
     providedIn: 'root'
 })
 export class PlaneService {
+    private readonly _currentPlaneStateEvent: { [planeId: number]: BehaviorSubject<string> } = {};
+
+    public readonly planeComponents: { [planeId: number]: PlaneComponent } = {};
+
     public readonly planes = new BehaviorSubject<Plane[]>([BACKGROUND_PLANE]);
 
     public readonly activePlane = new BehaviorSubject<number>(0);
@@ -63,6 +69,21 @@ export class PlaneService {
 
     private nextId = 1;
 
+    public getSnapshotEvent(planeId: number): BehaviorSubject<string> {
+        if (!this._currentPlaneStateEvent[planeId]) {
+            this._currentPlaneStateEvent[planeId] = new BehaviorSubject('');
+        }
+        return this._currentPlaneStateEvent[planeId];
+    }
+
+    public addSnapshot(planeId: number, nextSnapshot: string): void {
+        if (this._currentPlaneStateEvent[planeId]) {
+            this._currentPlaneStateEvent[planeId].next(nextSnapshot);
+        } else {
+            this._currentPlaneStateEvent[planeId] = new BehaviorSubject(nextSnapshot);
+        }
+    }
+
     /**
      * Function to add new planes to the global plane store.
      *
@@ -80,11 +101,60 @@ export class PlaneService {
                 width: 600,
                 height: 600,
                 visible: true,
-                index: currentIndex
+                index: currentIndex,
+                isBackground: false
             });
         }
         this.planes.next(temp);
         return returnValue;
+    }
+
+    /**
+     * Function to get the next slot in the shape-array of a plane
+     *
+     * @param planeId The id the plane that next slot is returned
+     * @returns the next slot of the given plane
+     */
+    public getNextDrawSlot(planeId: number): number {
+        if (!this.globalStore[planeId]) {
+            this.globalStore[planeId] = [];
+        }
+        return this.globalStore[planeId].length;
+    }
+
+    public closeNextDrawSlot(planeId: number): number {
+        return this.getNextDrawSlot(planeId);
+    }
+
+    /**
+     * Function, through which the shape-array of a plane will be exchanged
+     *
+     * @param planeId The id of a plane which shape-array is modified
+     * @param callback A function that receives a copy of the original shape-array and must return a shape-array, which
+     * will be set as the new shape-array for the plane
+     */
+    public exchangeDrawingPoints(planeId: number, callback: (drawPoints: DrawPoint[]) => DrawPoint[]): void {
+        const drawPoints = this.getFullDrawing(planeId);
+        this.globalStore[planeId] = callback(drawPoints.slice(0));
+    }
+
+    /**
+     * Function to merge the coordinates of drawpoints together and create one drawpoint
+     *
+     * @param drawPoints An array of drawpoints that will be merged into one drawpoint
+     *
+     * @returns The new drawpoint containing all coordinates from the original drawpoints
+     */
+    public mergeDrawPoints(drawPoints: DrawPoint[]): DrawPoint {
+        const nextCoordinates = drawPoints.reduce(
+            (previousValue, nextPoint) => previousValue.concat(nextPoint.nextCoordinates),
+            [] as Coordinate[]
+        );
+        return {
+            nextCoordinates,
+            color: drawPoints[0].color,
+            mode: drawPoints[0].mode
+        };
     }
 
     public addDrawing(planeId: number, drawing: DrawPoint): void {
@@ -96,7 +166,7 @@ export class PlaneService {
         this.drawEvent.next(drawing);
     }
 
-    public getFullDrawing(id: number): DrawPoint[] | undefined {
-        return this.globalStore[id];
+    public getFullDrawing(id: number): DrawPoint[] {
+        return this.globalStore[id] || [];
     }
 }

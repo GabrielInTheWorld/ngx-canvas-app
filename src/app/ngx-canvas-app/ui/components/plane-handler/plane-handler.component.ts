@@ -15,7 +15,7 @@ export class PlaneHandlerComponent implements OnInit {
 
     ngOnInit(): void {
         this.planeService.planes.subscribe(planes => {
-            this.planes = planes;
+            this.planes = [...planes];
             this.cd.markForCheck();
         });
     }
