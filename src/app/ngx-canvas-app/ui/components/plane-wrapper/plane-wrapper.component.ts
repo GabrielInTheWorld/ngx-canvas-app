@@ -18,8 +18,10 @@ export class PlaneWrapperComponent implements OnInit {
         return this.planeService.activePlane.value;
     }
 
-    private isDrawing = false;
-    private coordinates: Coordinate[] = [];
+    private _isDrawing = false;
+    private _coordinates: Coordinate[] = [];
+
+    private _lastDrawSlot = 0;
 
     constructor(private planeService: PlaneService, private colorService: ColorService) {}
 
@@ -28,12 +30,15 @@ export class PlaneWrapperComponent implements OnInit {
     }
 
     public onMouseDown(): void {
-        this.isDrawing = true;
+        this._isDrawing = true;
+        if (this.drawingMode === DrawingMode.ERASER) {
+            this._lastDrawSlot = this.planeService.getNextDrawSlot(this.activePlaneId);
+        }
     }
 
     public onMouseMove(event: MouseEvent): void {
         const coordinate = { x: event.offsetX, y: event.offsetY };
-        if (this.isDrawing) {
+        if (this._isDrawing) {
             this.onDraw(coordinate);
         } else {
             this.planeService.moveEvent.next(coordinate);
@@ -42,10 +47,23 @@ export class PlaneWrapperComponent implements OnInit {
 
     public onMouseUp(): void {
         this.onBeforeDraw();
-        this.isDrawing = false;
-        this.planeService.addDrawing(this.activePlaneId, this.getDrawPoint(this.coordinates));
+        this._isDrawing = false;
+        this.planeService.addDrawing(this.activePlaneId, this.getDrawPoint(this._coordinates));
         this.planeService.clearPreviewEvent.next();
-        this.coordinates = [];
+        this._coordinates = [];
+        if (this.drawingMode === DrawingMode.ERASER) {
+            const nextDrawSlot = this.planeService.closeNextDrawSlot(this.activePlaneId);
+            const difference = nextDrawSlot - this._lastDrawSlot;
+            this.planeService.exchangeDrawingPoints(this.activePlaneId, drawPoints =>
+                drawPoints
+                    .slice(0, this._lastDrawSlot)
+                    .concat(this.planeService.mergeDrawPoints(drawPoints.splice(this._lastDrawSlot, difference)))
+            );
+        }
+        this.planeService.addSnapshot(
+            this.activePlaneId,
+            this.planeService.planeComponents[this.activePlaneId].getSnapshot()
+        );
     }
 
     private getDrawPoint(nextCoordinates: Coordinate[]): DrawPoint {
@@ -73,7 +91,7 @@ export class PlaneWrapperComponent implements OnInit {
                 break;
             default:
                 this.planeService.previewDrawEvent.next(this.getDrawPoint([coordinate]));
-                this.coordinates.push(coordinate);
+                this._coordinates.push(coordinate);
         }
     }
 }

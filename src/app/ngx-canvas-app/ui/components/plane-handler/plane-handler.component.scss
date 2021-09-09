@@ -11,6 +11,10 @@
     .plane-layering {
         height: calc(100% - 41px);
         overflow-y: auto;
+
+        cdk-virtual-scroll-viewport {
+            height: 100%;
+        }
     }
 
     .action-wrapper {

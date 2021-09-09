@@ -47,8 +47,14 @@ export class PlaneComponent extends BasePlaneComponent implements OnInit, AfterV
     public ngAfterViewInit(): void {
         if (this.canvas?.nativeElement) {
             this.context = this.canvas.nativeElement.getContext('2d');
+            this.planeService.planeComponents[this.plane.id] = this;
+            // this.planeService.addSnapshot(this.plane.id, this.canvas!.nativeElement.toDataURL());
             this.rerender();
         }
+    }
+
+    public getSnapshot(): string {
+        return this.canvas!.nativeElement.toDataURL();
     }
 
     protected getFirstCoordinate(_point: DrawPoint): Coordinate {
@@ -81,6 +87,7 @@ export class PlaneComponent extends BasePlaneComponent implements OnInit, AfterV
                 this.drawCircle(point);
                 break;
         }
+        // this.planeService.addSnapshot(this.plane.id, this.canvas!.nativeElement.toDataURL());
     }
 
     private drawEraser(point: DrawPoint): void {
@@ -102,10 +109,8 @@ export class PlaneComponent extends BasePlaneComponent implements OnInit, AfterV
 
     private rerender(): void {
         const drawPoints = this.planeService.getFullDrawing(this.plane.id);
-        if (drawPoints) {
-            for (const drawPoint of drawPoints) {
-                this.onDraw(drawPoint);
-            }
+        for (const drawPoint of drawPoints) {
+            this.onDraw(drawPoint);
         }
     }
 }
