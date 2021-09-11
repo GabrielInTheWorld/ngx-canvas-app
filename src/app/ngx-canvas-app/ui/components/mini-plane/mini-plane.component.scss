@@ -1,3 +1,20 @@
-canvas {
-  background: white;
+:host {
+    width: 40px;
+    height: 40px;
+    display: block;
+    position: relative;
+}
+
+img {
+    position: absolute;
+    z-index: 1;
+}
+
+.mini-plane-background {
+    position: absolute;
+    z-index: 0;
+
+    background: white;
+    // &.background-white {
+    // }
 }

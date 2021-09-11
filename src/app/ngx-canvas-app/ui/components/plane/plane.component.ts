@@ -48,7 +48,7 @@ export class PlaneComponent extends BasePlaneComponent implements OnInit, AfterV
         if (this.canvas?.nativeElement) {
             this.context = this.canvas.nativeElement.getContext('2d');
             this.planeService.planeComponents[this.plane.id] = this;
-            // this.planeService.addSnapshot(this.plane.id, this.canvas!.nativeElement.toDataURL());
+            this.planeService.addSnapshot(this.plane.id, this.getSnapshot());
             this.rerender();
         }
     }

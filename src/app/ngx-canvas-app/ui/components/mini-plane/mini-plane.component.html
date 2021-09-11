@@ -1,1 +1,6 @@
 <img [ngStyle]="{ width: ngxWidth, height: ngxHeight }" [src]="snapshot | async" />
+<div
+    [ngStyle]="{ width: ngxWidth, height: ngxHeight }"
+    [ngClass]="{ 'background-white': plane?.isBackground }"
+    class="mini-plane-background"
+></div>
