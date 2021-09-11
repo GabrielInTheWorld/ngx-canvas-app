@@ -1,6 +1,6 @@
-<div class="app-canvas-wrapper">
-    <div class="content-wrapper" (mouseup)="onMouseUp()" (mousemove)="onMouseMove($event)" (mousedown)="onMouseDown()">
-        <ngx-cursor-canvas></ngx-cursor-canvas>
+<div class="app-canvas-wrapper" (mouseup)="onMouseUp()" (mousedown)="onMouseDown()" (mousemove)="onMouseMove($event)">
+    <ngx-cursor-canvas></ngx-cursor-canvas>
+    <div class="content-wrapper">
         <ngx-preview-plane></ngx-preview-plane>
         <ng-container *ngFor="let canvas of planes">
             <ngx-plane [plane]="canvas"></ngx-plane>

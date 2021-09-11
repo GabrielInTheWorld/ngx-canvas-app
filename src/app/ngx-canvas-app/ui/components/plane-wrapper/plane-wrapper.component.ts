@@ -38,10 +38,11 @@ export class PlaneWrapperComponent implements OnInit {
 
     public onMouseMove(event: MouseEvent): void {
         const coordinate = { x: event.offsetX, y: event.offsetY };
+        this.planeService.moveEvent.next(coordinate);
         if (this._isDrawing) {
             this.onDraw(coordinate);
         } else {
-            this.planeService.moveEvent.next(coordinate);
+            this.planeService.pipedMoveEvent.next(coordinate);
         }
     }
 

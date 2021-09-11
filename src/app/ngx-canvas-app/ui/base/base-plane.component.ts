@@ -15,9 +15,13 @@ export class BasePlaneComponent extends BaseComponent {
 
     protected previousPoint: Coordinate = { x: 0, y: 0 };
 
+    protected get lineWidth(): number {
+        return this.planeService.lineWidthEvent.value;
+    }
+
     public constructor(protected planeService: PlaneService) {
         super();
-        this.subscriptions.push(planeService.moveEvent.subscribe(nextPoint => (this.previousPoint = nextPoint)));
+        this.subscriptions.push(planeService.pipedMoveEvent.subscribe(nextPoint => (this.previousPoint = nextPoint)));
     }
 
     protected drawPen(point: DrawPoint): void {
@@ -27,7 +31,7 @@ export class BasePlaneComponent extends BaseComponent {
             this.context!.lineJoin = 'round';
             this.context!.strokeStyle = point.color;
             this.context!.globalCompositeOperation = 'source-over';
-            this.context!.lineWidth = 30;
+            this.context!.lineWidth = this.lineWidth;
             this.context?.beginPath();
             this.context?.moveTo(firstPoint.x, firstPoint.y);
             this.context?.lineTo(coordinate.x, coordinate.y);

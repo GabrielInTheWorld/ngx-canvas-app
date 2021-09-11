@@ -20,7 +20,7 @@ export class PreviewPlaneComponent extends BasePlaneComponent implements OnInit,
     ngOnInit(): void {
         this.subscriptions.push(
             this.planeService.previewDrawEvent.subscribe(nextPoint => this.onPreviewDraw(nextPoint)),
-            this.planeService.moveEvent.subscribe(point => (this.previousPoint = point)),
+            this.planeService.pipedMoveEvent.subscribe(point => (this.previousPoint = point)),
             this.planeService.clearPreviewEvent.subscribe(() => this.onClear())
         );
     }

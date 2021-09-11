@@ -31,13 +31,14 @@ export interface DrawPoint {
     color: Color;
 }
 
+const DEFAULT_COORDINATE: Coordinate = { x: 0, y: 0 };
 const BACKGROUND_PLANE: Plane = { id: 0, width: 600, height: 600, visible: true, index: 0, isBackground: true };
 
 @Injectable({
     providedIn: 'root'
 })
 export class PlaneService {
-    private readonly _currentPlaneStateEvent: { [planeId: number]: BehaviorSubject<string> } = {};
+    public readonly lineWidthEvent = new BehaviorSubject<number>(30);
 
     public readonly planeComponents: { [planeId: number]: PlaneComponent } = {};
 
@@ -45,11 +46,11 @@ export class PlaneService {
 
     public readonly activePlane = new BehaviorSubject<number>(0);
 
-    public readonly moveEvent = new BehaviorSubject<Coordinate>({ x: 0, y: 0 });
+    public readonly pipedMoveEvent = new BehaviorSubject<Coordinate>(DEFAULT_COORDINATE);
+
+    public readonly moveEvent = new BehaviorSubject<Coordinate>(DEFAULT_COORDINATE);
 
     public readonly previewDrawEvent = new Subject<DrawPoint>();
-
-    private readonly drawEvent = new Subject<DrawPoint>();
 
     public readonly drawingModeEvent = new BehaviorSubject<DrawingMode>(DrawingMode.PEN);
 
@@ -58,16 +59,17 @@ export class PlaneService {
     public readonly clearSiteEvent = new Subject<void>();
 
     public get lastMoveCoordinate(): Coordinate {
-        return this.moveEvent.value;
+        return this.pipedMoveEvent.value;
     }
 
     public get drawingObservable(): Observable<DrawPoint> {
-        return this.drawEvent.asObservable();
+        return this._drawEvent.asObservable();
     }
 
-    private globalStore: { [id: number]: DrawPoint[] } = {};
-
-    private nextId = 1;
+    private readonly _drawEvent = new Subject<DrawPoint>();
+    private readonly _currentPlaneStateEvent: { [planeId: number]: BehaviorSubject<string> } = {};
+    private _globalStore: { [id: number]: DrawPoint[] } = {};
+    private _nextId = 1;
 
     public getSnapshotEvent(planeId: number): BehaviorSubject<string> {
         if (!this._currentPlaneStateEvent[planeId]) {
@@ -94,7 +96,7 @@ export class PlaneService {
         const temp = this.planes.value;
         let returnValue = 0;
         for (let i = 0; i < amount; ++i) {
-            const currentIndex = this.nextId++;
+            const currentIndex = this._nextId++;
             returnValue = currentIndex;
             temp.unshift({
                 id: currentIndex,
@@ -116,10 +118,10 @@ export class PlaneService {
      * @returns the next slot of the given plane
      */
     public getNextDrawSlot(planeId: number): number {
-        if (!this.globalStore[planeId]) {
-            this.globalStore[planeId] = [];
+        if (!this._globalStore[planeId]) {
+            this._globalStore[planeId] = [];
         }
-        return this.globalStore[planeId].length;
+        return this._globalStore[planeId].length;
     }
 
     public closeNextDrawSlot(planeId: number): number {
@@ -135,7 +137,7 @@ export class PlaneService {
      */
     public exchangeDrawingPoints(planeId: number, callback: (drawPoints: DrawPoint[]) => DrawPoint[]): void {
         const drawPoints = this.getFullDrawing(planeId);
-        this.globalStore[planeId] = callback(drawPoints.slice(0));
+        this._globalStore[planeId] = callback(drawPoints.slice(0));
     }
 
     /**
@@ -158,15 +160,15 @@ export class PlaneService {
     }
 
     public addDrawing(planeId: number, drawing: DrawPoint): void {
-        if (this.globalStore[planeId]) {
-            this.globalStore[planeId].push(drawing);
+        if (this._globalStore[planeId]) {
+            this._globalStore[planeId].push(drawing);
         } else {
-            this.globalStore[planeId] = [drawing];
+            this._globalStore[planeId] = [drawing];
         }
-        this.drawEvent.next(drawing);
+        this._drawEvent.next(drawing);
     }
 
     public getFullDrawing(id: number): DrawPoint[] {
-        return this.globalStore[id] || [];
+        return this._globalStore[id] || [];
     }
 }
