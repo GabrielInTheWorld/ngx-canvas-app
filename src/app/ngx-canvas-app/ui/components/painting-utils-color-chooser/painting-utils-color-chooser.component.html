@@ -1,6 +1,6 @@
 <div class="painting-utils--color-chooser">
     <div class="painting-utils--chooser-buttons">
-        <div matRipple class="mini-button" matTooltip="Farben zurücksetzen">
+        <div matRipple class="mini-button" matTooltip="Farben zurücksetzen" (click)="resetColors()">
             <div class="chooser-tiles--preview">
                 <div class="second-color">
                     <ngx-color-tile id="secondColor" backgroundColor="#fff" [size]="10"></ngx-color-tile>
@@ -10,7 +10,7 @@
                 </div>
             </div>
         </div>
-        <div matRipple class="mini-button flex-center" matTooltip="Farben tauschen">
+        <div matRipple class="mini-button flex-center" matTooltip="Farben tauschen" (click)="switchColors()">
             <mat-icon>compare_arrows</mat-icon>
         </div>
     </div>
