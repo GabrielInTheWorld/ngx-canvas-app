@@ -1,6 +1,6 @@
 import { ColorService } from 'src/app/ngx-canvas-app/ui/services/color.service';
 import { Component, OnInit } from '@angular/core';
-import { Coordinate, DrawingMode, DrawPoint, Plane, PlaneService } from '../../services/plane.service';
+import { Coordinate, DrawEvent, DrawingMode, DrawDescriptor, Plane, PlaneService } from '../../services/plane.service';
 
 @Component({
     selector: 'ngx-plane-wrapper',
@@ -49,25 +49,29 @@ export class PlaneWrapperComponent implements OnInit {
     public onMouseUp(): void {
         this.onBeforeDraw();
         this._isDrawing = false;
-        this.planeService.addDrawing(this.activePlaneId, this.getDrawPoint(this._coordinates));
+        // this.planeService.nextEvent(new DrawEvent(this.activePlaneId, this.getDrawPoint(this._coordinates)));
+        // this.planeService.addDrawing(this.activePlaneId, this.getDrawPoint(this._coordinates));
+        if (this.drawingMode === DrawingMode.ERASER) {
+            const drawPoint = this.planeService.mergeDrawPoints(this.planeService.clearDrawCache());
+            // const firstCoordinate = drawPoint.nextCoordinates[0];
+            // drawPoint.nextCoordinates.unshift(firstCoordinate);
+            this.planeService.nextEvent(new DrawEvent(this.activePlaneId, drawPoint));
+            // const nextDrawSlot = this.planeService.closeNextDrawSlot(this.activePlaneId);
+            // const difference = nextDrawSlot - this._lastDrawSlot;
+            // this.planeService.exchangeDrawingPoints(this.activePlaneId, drawPoints =>
+            //     drawPoints
+            //         .slice(0, this._lastDrawSlot)
+            //         .concat(this.planeService.mergeDrawPoints(drawPoints.splice(this._lastDrawSlot, difference)))
+            // );
+        } else {
+            this.planeService.nextEvent(new DrawEvent(this.activePlaneId, this.getDrawPoint(this._coordinates)));
+        }
         this.planeService.clearPreviewEvent.next();
         this._coordinates = [];
-        if (this.drawingMode === DrawingMode.ERASER) {
-            const nextDrawSlot = this.planeService.closeNextDrawSlot(this.activePlaneId);
-            const difference = nextDrawSlot - this._lastDrawSlot;
-            this.planeService.exchangeDrawingPoints(this.activePlaneId, drawPoints =>
-                drawPoints
-                    .slice(0, this._lastDrawSlot)
-                    .concat(this.planeService.mergeDrawPoints(drawPoints.splice(this._lastDrawSlot, difference)))
-            );
-        }
-        this.planeService.addSnapshot(
-            this.activePlaneId,
-            this.planeService.planeComponents[this.activePlaneId].getSnapshot()
-        );
+        this.planeService.nextSnapshotEvent(this.activePlaneId);
     }
 
-    private getDrawPoint(nextCoordinates: Coordinate[]): DrawPoint {
+    private getDrawPoint(nextCoordinates: Coordinate[]): DrawDescriptor {
         return {
             nextCoordinates,
             color: this.colorService.currentColor,
@@ -88,7 +92,7 @@ export class PlaneWrapperComponent implements OnInit {
     private onDraw(coordinate: Coordinate): void {
         switch (this.drawingMode) {
             case DrawingMode.ERASER:
-                this.planeService.addDrawing(this.activePlaneId, this.getDrawPoint([coordinate]));
+                this.planeService.addDirectDrawingToPlane(this.activePlaneId, this.getDrawPoint([coordinate]));
                 break;
             default:
                 this.planeService.previewDrawEvent.next(this.getDrawPoint([coordinate]));

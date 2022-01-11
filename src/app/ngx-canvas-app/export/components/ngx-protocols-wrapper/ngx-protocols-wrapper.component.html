@@ -1,0 +1,30 @@
+<ngx-split-view>
+    <ngx-split-view-container>
+        <cdk-virtual-scroll-viewport [itemSize]="30">
+            <ng-container
+                *cdkVirtualFor="let point of nextEventDescription | async; let index = index; let last = last"
+            >
+                <div class="protocol-module">
+                    <img [width]="30" [height]="30" [src]="point.snapshotSubject | async" />&nbsp;<span
+                        >{{ point.id }}: </span
+                    >&nbsp;
+                    <span>{{ point.type }}</span>
+                </div>
+                <mat-divider></mat-divider>
+            </ng-container>
+        </cdk-virtual-scroll-viewport>
+        <mat-divider></mat-divider>
+        <div class="action-row">
+            <ngx-icon-button>west</ngx-icon-button>
+            <ngx-icon-button>east</ngx-icon-button>
+        </div>
+    </ngx-split-view-container>
+    <ngx-split-view-container>
+        <ng-container *ngFor="let point of currentPlaneDrawing; let last = last">
+            <!-- <div class="protocol-module">
+                <span>{{ point.mode }}</span>
+            </div>
+            <mat-divider></mat-divider> -->
+        </ng-container>
+    </ngx-split-view-container>
+</ngx-split-view>

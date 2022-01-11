@@ -1,3 +1,4 @@
+import { DirectivesModule } from './directives/directives.module';
 import { CommonModule } from '@angular/common';
 import { NgModule, Type } from '@angular/core';
 import { MaterialDesignModule } from '../material-design/material-design.module';
@@ -36,6 +37,6 @@ const modules: any[] | Type<any>[] = [NgxTabModule, NgxSplitViewModule];
 @NgModule({
     declarations: [...declarations],
     exports: [...declarations, ...modules],
-    imports: [CommonModule, MaterialDesignModule, ...modules]
+    imports: [CommonModule, MaterialDesignModule, DirectivesModule, ...modules]
 })
 export class UiModule {}

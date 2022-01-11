@@ -3,4 +3,8 @@
     display: flex;
     background-color: #999;
     user-select: none;
+
+    #invisiblePicture {
+        display: none;
+    }
 }

@@ -1,16 +1,16 @@
 import { AfterViewInit, Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { BasePlaneComponent } from '../../base/base-plane.component';
-import { PlaneService, Plane, DrawPoint, DrawingMode, Coordinate } from '../../services/plane.service';
+import { PlaneService, Plane, DrawDescriptor, DrawingMode, Coordinate } from '../../services/plane.service';
 
 @Component({
     selector: 'ngx-plane',
     templateUrl: './plane.component.html',
     styleUrls: ['./plane.component.scss']
 })
-export class PlaneComponent extends BasePlaneComponent implements OnInit, AfterViewInit {
-    @ViewChild('canvas')
-    private canvas: ElementRef<HTMLCanvasElement> | null = null;
+export class PlaneComponent extends BasePlaneComponent implements OnInit {
+    // @ViewChild('canvas')
+    // private canvas: ElementRef<HTMLCanvasElement> | null = null;
 
     @Input()
     public plane!: Plane;
@@ -44,25 +44,36 @@ export class PlaneComponent extends BasePlaneComponent implements OnInit, AfterV
         );
     }
 
-    public ngAfterViewInit(): void {
-        if (this.canvas?.nativeElement) {
-            this.context = this.canvas.nativeElement.getContext('2d');
-            this.planeService.planeComponents[this.plane.id] = this;
-            this.planeService.addSnapshot(this.plane.id, this.getSnapshot());
-            this.rerender();
-        }
-    }
-
     public getSnapshot(): string {
         return this.canvas!.nativeElement.toDataURL();
     }
 
-    protected getFirstCoordinate(_point: DrawPoint): Coordinate {
+    /**
+     * Use this with caution, because it is a hack to erase on a plane
+     *
+     * @param point
+     */
+    public draw(point: DrawDescriptor): void {
+        this.onDraw(point);
+    }
+
+    protected onAfterViewInit(): void {
+        this.planeService.planeComponents[this.plane.id] = this;
+        this.planeService.nextSnapshotEvent(this.plane.id, this.getSnapshot());
+        this.rerender();
+    }
+
+    protected getFirstCoordinate(_point: DrawDescriptor): Coordinate {
         return this.planeService.lastMoveCoordinate;
     }
 
     private addEventListener(): void {
-        this.drawSubscription = this.planeService.drawingObservable.subscribe(point => this.onDraw(point));
+        this.drawSubscription = this.planeService.drawingObservable.subscribe(point => {
+            if (point.mode === DrawingMode.ERASER) {
+                this.previousPoint = point.nextCoordinates[0];
+            }
+            this.onDraw(point);
+        });
     }
 
     private removeEventListener(): void {
@@ -72,7 +83,7 @@ export class PlaneComponent extends BasePlaneComponent implements OnInit, AfterV
         }
     }
 
-    private onDraw(point: DrawPoint): void {
+    private onDraw(point: DrawDescriptor): void {
         switch (point.mode) {
             case DrawingMode.PEN:
                 this.drawPen(point);
@@ -90,22 +101,22 @@ export class PlaneComponent extends BasePlaneComponent implements OnInit, AfterV
         // this.planeService.addSnapshot(this.plane.id, this.canvas!.nativeElement.toDataURL());
     }
 
-    private drawEraser(point: DrawPoint): void {
-        const coordinates = point.nextCoordinates;
-        let firstPoint = this.previousPoint;
-        coordinates.forEach(coordinate => {
-            this.context!.lineJoin = 'round';
-            this.context!.globalCompositeOperation = 'destination-out';
-            this.context!.lineWidth = 30;
-            this.context?.beginPath();
-            this.context?.moveTo(firstPoint.x, firstPoint.y);
-            this.context?.lineTo(coordinate.x, coordinate.y);
-            this.context?.closePath();
-            this.context?.stroke();
-            firstPoint = coordinate;
-        });
-        this.previousPoint = firstPoint;
-    }
+    // private drawEraser(point: DrawDescriptor): void {
+    //     const coordinates = point.nextCoordinates;
+    //     let firstPoint = this.previousPoint;
+    //     coordinates.forEach(coordinate => {
+    //         this.context!.lineJoin = 'round';
+    //         this.context!.globalCompositeOperation = 'destination-out';
+    //         this.context!.lineWidth = 30;
+    //         this.context?.beginPath();
+    //         this.context?.moveTo(firstPoint.x, firstPoint.y);
+    //         this.context?.lineTo(coordinate.x, coordinate.y);
+    //         this.context?.closePath();
+    //         this.context?.stroke();
+    //         firstPoint = coordinate;
+    //     });
+    //     this.previousPoint = firstPoint;
+    // }
 
     private rerender(): void {
         const drawPoints = this.planeService.getFullDrawing(this.plane.id);

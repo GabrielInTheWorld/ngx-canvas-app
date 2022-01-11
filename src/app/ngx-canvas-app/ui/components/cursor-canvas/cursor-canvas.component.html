@@ -1,1 +1,7 @@
-<canvas #cursorCanvas [width]="ngxWidth" [height]="ngxHeight" class="cursor-canvas"></canvas>
+<canvas
+    #cursorCanvas
+    [width]="ngxWidth"
+    [height]="ngxHeight"
+    class="cursor-canvas"
+    (ngxResizeDetector)="onResize($event)"
+></canvas>

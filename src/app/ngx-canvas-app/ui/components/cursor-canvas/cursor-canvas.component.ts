@@ -1,6 +1,8 @@
+import { ElementResizeDetectorService } from './../../libraries/element-resize-detector/element-resize-detector.service';
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { BaseComponent } from '../../base/base.component';
 import { Coordinate, PlaneService } from '../../services/plane.service';
+import { ResizeEvent } from '../../directives/resize-detector/resize-detector.directive';
 
 @Component({
     selector: 'ngx-cursor-canvas',
@@ -29,6 +31,13 @@ export class CursorCanvasComponent extends BaseComponent implements OnInit {
 
     ngOnInit(): void {
         this.subscriptions.push(this.planeService.moveEvent.subscribe(coordinate => this.onMoveEvent(coordinate)));
+    }
+
+    public onResize(event: ResizeEvent): void {
+        setTimeout(() => {
+            this.ngxWidth = event.dimensions.width;
+            this.ngxHeight = event.dimensions.height;
+        });
     }
 
     private onMoveEvent(coordinate: Coordinate): void {

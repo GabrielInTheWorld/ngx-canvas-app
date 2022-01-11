@@ -1,5 +1,5 @@
 <button mat-icon-button>
-    <mat-icon>
+    <mat-icon [ngStyle]="{ transform: getRotation() }">
         <ng-content></ng-content>
     </mat-icon>
 </button>

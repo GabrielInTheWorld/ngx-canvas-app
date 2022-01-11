@@ -1,3 +1,4 @@
+import { NgxProtocolsWrapperComponent } from './components/ngx-protocols-wrapper/ngx-protocols-wrapper.component';
 import { CommonModule } from '@angular/common';
 import { NgModule, Type } from '@angular/core';
 import { MaterialDesignModule } from '../material-design/material-design.module';
@@ -11,7 +12,8 @@ const declarations: any[] | Type<any>[] = [
     NgxColorFieldComponent,
     NgxRightSiteComponent,
     NgxLeftSiteComponent,
-    NgxPaintingUtilsWrapperComponent
+    NgxPaintingUtilsWrapperComponent,
+    NgxProtocolsWrapperComponent
 ];
 
 @NgModule({

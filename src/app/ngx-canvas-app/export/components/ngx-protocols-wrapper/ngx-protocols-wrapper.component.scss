@@ -1,0 +1,24 @@
+:host {
+    min-width: 250px;
+}
+
+cdk-virtual-scroll-viewport {
+    height: calc(100% - 40px);
+}
+
+.protocol-module {
+    display: flex;
+    align-items: center;
+    $size: 30px;
+    height: $size;
+    max-height: $size;
+    min-height: $size;
+
+    img {
+        background: white;
+    }
+}
+
+.action-row {
+    height: 40px;
+}

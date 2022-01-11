@@ -34,8 +34,10 @@ export class SplitViewComponent implements AfterViewInit {
         if (containerOne && containerTwo) {
             const heightOne = this.containerElementsHeight[index] + event.distance.y;
             const heightTwo = this.containerElementsHeight[index + 1] - event.distance.y;
-            containerOne.style.height = `${heightOne}px`;
-            containerTwo.style.height = `${heightTwo}px`;
+            if (heightOne >= 60 && heightTwo >= 60) {
+                containerOne.style.height = `${heightOne}px`;
+                containerTwo.style.height = `${heightTwo}px`;
+            }
         }
     }
 
@@ -47,8 +49,10 @@ export class SplitViewComponent implements AfterViewInit {
         if (containerOne && containerTwo) {
             const heightOne = this.containerElementsHeight[index];
             const heightTwo = this.containerElementsHeight[index + 1];
-            containerOne.style.height = `${heightOne}px`;
-            containerTwo.style.height = `${heightTwo}px`;
+            if (heightOne >= 60 && heightTwo >= 60) {
+                containerOne.style.height = `${heightOne}px`;
+                containerTwo.style.height = `${heightTwo}px`;
+            }
         }
     }
 }

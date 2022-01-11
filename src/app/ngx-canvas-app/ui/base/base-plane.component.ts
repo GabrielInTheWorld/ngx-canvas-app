@@ -1,5 +1,5 @@
-import { Directive } from '@angular/core';
-import { Coordinate, DrawPoint, PlaneService } from '../services/plane.service';
+import { Directive, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
+import { Coordinate, DrawDescriptor, PlaneService } from '../services/plane.service';
 import { BaseComponent } from './base.component';
 
 export interface RectParams {
@@ -10,7 +10,9 @@ export interface RectParams {
 }
 
 @Directive()
-export class BasePlaneComponent extends BaseComponent {
+export class BasePlaneComponent extends BaseComponent implements AfterViewInit {
+    @ViewChild('canvas')
+    protected canvas: ElementRef<HTMLCanvasElement> | null = null;
     protected context: CanvasRenderingContext2D | null = null;
 
     protected previousPoint: Coordinate = { x: 0, y: 0 };
@@ -24,7 +26,14 @@ export class BasePlaneComponent extends BaseComponent {
         this.subscriptions.push(planeService.pipedMoveEvent.subscribe(nextPoint => (this.previousPoint = nextPoint)));
     }
 
-    protected drawPen(point: DrawPoint): void {
+    public ngAfterViewInit(): void {
+        if (this.canvas) {
+            this.context = this.canvas.nativeElement.getContext('2d');
+        }
+        this.onAfterViewInit();
+    }
+
+    protected drawPen(point: DrawDescriptor): void {
         const coordinates = point.nextCoordinates;
         let firstPoint = this.previousPoint;
         coordinates.forEach(coordinate => {
@@ -41,7 +50,24 @@ export class BasePlaneComponent extends BaseComponent {
         });
     }
 
-    protected drawRectangle(point: DrawPoint): void {
+    protected drawEraser(point: DrawDescriptor): void {
+        const coordinates = point.nextCoordinates;
+        let firstPoint = this.previousPoint;
+        coordinates.forEach(coordinate => {
+            this.context!.lineJoin = 'round';
+            this.context!.globalCompositeOperation = 'destination-out';
+            this.context!.lineWidth = 30;
+            this.context?.beginPath();
+            this.context?.moveTo(firstPoint.x, firstPoint.y);
+            this.context?.lineTo(coordinate.x, coordinate.y);
+            this.context?.closePath();
+            this.context?.stroke();
+            firstPoint = coordinate;
+        });
+        this.previousPoint = firstPoint;
+    }
+
+    protected drawRectangle(point: DrawDescriptor): void {
         if (this.context) {
             const { x, y, width, height } = this.getRectParams(point);
             this.context.strokeStyle = point.color;
@@ -52,7 +78,7 @@ export class BasePlaneComponent extends BaseComponent {
         }
     }
 
-    protected drawCircle(point: DrawPoint): void {
+    protected drawCircle(point: DrawDescriptor): void {
         const coordinate = this.getFirstCoordinate(point);
         const { width, height } = this.getRectParams(point);
         const radius = Math.sqrt(width ** 2 + height ** 2);
@@ -65,7 +91,7 @@ export class BasePlaneComponent extends BaseComponent {
         }
     }
 
-    protected getRectParams(point: DrawPoint): RectParams {
+    protected getRectParams(point: DrawDescriptor): RectParams {
         const previousCoordinate = this.getFirstCoordinate(point);
         const nextCoordinate = this.getLastCoordinate(point);
         const x = previousCoordinate.x < nextCoordinate.x ? previousCoordinate.x : nextCoordinate.x;
@@ -80,11 +106,13 @@ export class BasePlaneComponent extends BaseComponent {
         };
     }
 
-    protected getFirstCoordinate(_point: DrawPoint): Coordinate {
+    protected getFirstCoordinate(_point: DrawDescriptor): Coordinate {
         return this.previousPoint;
     }
 
-    protected getLastCoordinate(_point: DrawPoint): Coordinate {
+    protected getLastCoordinate(_point: DrawDescriptor): Coordinate {
         return _point.nextCoordinates[_point.nextCoordinates.length - 1];
     }
+
+    protected onAfterViewInit(): void {}
 }

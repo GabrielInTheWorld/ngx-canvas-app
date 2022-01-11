@@ -6,6 +6,7 @@ mat-icon {
 }
 
 :host {
+    display: inline-block;
     mat-icon,
     .mat-icon {
         line-height: 18px;
