@@ -115,7 +115,7 @@ export class PlaneService {
     }
 
     private readonly _drawEvent = new Subject<DrawDescriptor>();
-    private readonly _currentPlaneStateEvent: { [planeId: number]: BehaviorSubject<string> } = {};
+    private readonly _currentPlaneSnapshotEvents: { [planeId: number]: BehaviorSubject<string> } = {};
     private _globalStore: { [id: number]: DrawDescriptor[] } = {};
     private _nextId = 1;
 
@@ -124,7 +124,7 @@ export class PlaneService {
     private _eventStore: { [id: number]: EventDescription } = {};
     private _currentEventId = 0;
     private _lastSnapshot = '';
-    private _snapshotMap: { [planeId: number]: string } = {};
+    private _imageDataMap: { [planeId: number]: ImageData } = {};
 
     //////////////////////////////////////
     ///////////// Events /////////////////
@@ -143,11 +143,8 @@ export class PlaneService {
                 this.addDrawing(planeId, drawPoint);
                 break;
         }
-        // event.snapshot = this.getSnapshot();
         event.snapshotSubject = new BehaviorSubject(this._lastSnapshot);
         this.addEventDescription(event);
-        // this._eventStore[event.id] = event;
-        // console.log('eventstore:', this._eventStore);
     }
 
     public nextPlane(plane: PlaneConstruction): number {
@@ -176,39 +173,45 @@ export class PlaneService {
     //////////////////////////////////////
     //////////////////////////////////////
 
-    public getSnapshotEvent(planeId: number): BehaviorSubject<string> {
-        if (!this._currentPlaneStateEvent[planeId]) {
-            this._currentPlaneStateEvent[planeId] = new BehaviorSubject('');
-        }
-        return this._currentPlaneStateEvent[planeId];
+    public makeNextSnapshot(planeId: number, nextSnapshot?: string): void {
+        this.nextSnapshotEvent(planeId, nextSnapshot ?? this.planeComponents[planeId].getSnapshot());
+        this.nextImageDataEvent(planeId, this.planeComponents[planeId].getImageData());
     }
 
-    public nextSnapshotEvent(planeId: number, nextSnapshot?: string): void {
-        // console.log('nextSnapshot event');
-        const snapshot = nextSnapshot ?? this.planeComponents[planeId].getSnapshot();
-        if (this._currentPlaneStateEvent[planeId]) {
-            this._currentPlaneStateEvent[planeId].next(snapshot);
-        } else {
-            this._currentPlaneStateEvent[planeId] = new BehaviorSubject(snapshot);
+    public getSnapshotEventEmitter(planeId: number): BehaviorSubject<string> {
+        if (!this._currentPlaneSnapshotEvents[planeId]) {
+            this._currentPlaneSnapshotEvents[planeId] = new BehaviorSubject('');
         }
+        return this._currentPlaneSnapshotEvents[planeId];
+    }
+
+    private nextSnapshotEvent(planeId: number, nextSnapshot: string): void {
+        this.getSnapshotEventEmitter(planeId).next(nextSnapshot);
+    }
+
+    private nextImageDataEvent(planeId: number, nextImageData: ImageData): void {
         if (this._currentEventId !== 0) {
-            this._snapshotMap[planeId] = snapshot;
-            // this.getSnapshot().then(snapshot => {
-            this.lastEventDescription.snapshot = snapshot;
-            this.lastEventDescription.snapshotSubject?.next(snapshot);
-            this._lastSnapshot = snapshot;
-            // });
+            this._imageDataMap[planeId] = nextImageData;
+            this.getSnapshot().then(snapshot => {
+                this.lastEventDescription.snapshot = snapshot;
+                this.lastEventDescription.snapshotSubject?.next(snapshot);
+                this._lastSnapshot = snapshot;
+            });
         }
     }
 
     public async getSnapshot(): Promise<string> {
         const canvas = document.querySelector<HTMLCanvasElement>('#invisiblePicture')!;
-        // canvas.width = 600;
-        // canvas.height = 600;
-        // canvas.style.display = 'none';
+        canvas.width = 600;
+        canvas.height = 600;
         const context = canvas.getContext('2d');
-        for (const snapshot of Object.values(this._snapshotMap)) {
+        context?.clearRect(0, 0, canvas.width, canvas.height);
+        for (const event of Object.values(this._currentPlaneSnapshotEvents)) {
+            const snapshot = event.value;
             const img = new Image(600, 600);
+            img.onload = function () {
+                context?.drawImage(img, 0, 0);
+            };
             const promise = new Promise<void>(resolve => {
                 img.onload = () => {
                     context?.drawImage(img, 0, 0);
@@ -218,30 +221,8 @@ export class PlaneService {
             img.src = snapshot;
             await promise;
         }
-        // for (const plane of Object.values(this.planeComponents)) {
-        //     // console.log('plane', plane, canvas, context);
-        //     const img = new Image(600, 600);
-        //     // img.onload = event => {
-        //     //     console.log('onload::ready', event);
-        //     //     context!.drawImage(img, 0, 0);
-        //     // };
-        //     const promise = new Promise<void>(resolve => {
-        //         img.onload = () => {
-        //             context?.drawImage(img, 0, 0);
-        //             resolve();
-        //         };
-        //     });
-        //     img.src = this.getSnapshotEvent(plane.plane.id).value;
-        //     await promise;
-        //     // console.log('next image');
-        //     // console.log('image', img, img.src);
-        // }
-        // console.log('return canvas');
-        // console.log('data url', canvas.toDataURL());
         return canvas.toDataURL();
     }
-
-    public addSnapshot(planeId: number, nextSnapshot: string): void {}
 
     /**
      * Function to add new planes to the global plane store.
@@ -250,19 +231,7 @@ export class PlaneService {
      * @returns The id of the last added plane
      */
     public addPlane(amount: number = 1): number {
-        // const temp = this.planes.value;
-        // let returnValue = 0;
         for (let i = 0; i < amount; ++i) {
-            // const currentIndex = this._nextId++;
-            // returnValue = currentIndex;
-            // temp.unshift({
-            //     id: currentIndex,
-            //     width: 600,
-            //     height: 600,
-            //     visible: true,
-            //     index: currentIndex,
-            //     isBackground: false
-            // });
             const currentIndex = this._nextId;
             this.nextEvent(
                 new CreateEvent({
@@ -275,8 +244,6 @@ export class PlaneService {
             );
         }
         return this._nextId;
-        // this.planes.next(temp);
-        // return returnValue;
     }
 
     /**
@@ -328,13 +295,6 @@ export class PlaneService {
     }
 
     public addDirectDrawingToPlane(planeId: number, drawPoint: DrawDescriptor): void {
-        // if (this._globalStore[planeId]) {
-        //     this._globalStore[planeId].push(drawPoint);
-        // } else {
-        //     this._globalStore[planeId] = [drawPoint];
-        // }
-        // this._drawEvent.next(drawPoint);
-        // this.addDrawing(planeId, drawPoint);
         this.planeComponents[planeId].draw(drawPoint);
         this._drawCache.push(drawPoint);
     }

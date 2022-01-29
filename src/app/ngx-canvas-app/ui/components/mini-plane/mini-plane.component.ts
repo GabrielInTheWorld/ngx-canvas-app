@@ -18,7 +18,7 @@ export class MiniPlaneComponent {
     public ngxHeight = '40px';
 
     public get snapshot(): Observable<string> {
-        return this.plane ? this.planeService.getSnapshotEvent(this.plane.id) : of('');
+        return this.plane ? this.planeService.getSnapshotEventEmitter(this.plane.id) : of('');
     }
 
     public constructor(private planeService: PlaneService) {}

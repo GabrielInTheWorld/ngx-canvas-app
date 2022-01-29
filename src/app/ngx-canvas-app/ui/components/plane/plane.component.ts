@@ -48,6 +48,10 @@ export class PlaneComponent extends BasePlaneComponent implements OnInit {
         return this.canvas!.nativeElement.toDataURL();
     }
 
+    public getImageData(): ImageData {
+        return this.context!.getImageData(0, 0, this.plane.width, this.plane.height);
+    }
+
     /**
      * Use this with caution, because it is a hack to erase on a plane
      *
@@ -59,7 +63,7 @@ export class PlaneComponent extends BasePlaneComponent implements OnInit {
 
     protected onAfterViewInit(): void {
         this.planeService.planeComponents[this.plane.id] = this;
-        this.planeService.nextSnapshotEvent(this.plane.id, this.getSnapshot());
+        this.planeService.makeNextSnapshot(this.plane.id, this.getSnapshot());
         this.rerender();
     }
 

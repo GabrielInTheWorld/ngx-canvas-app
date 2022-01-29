@@ -49,26 +49,15 @@ export class PlaneWrapperComponent implements OnInit {
     public onMouseUp(): void {
         this.onBeforeDraw();
         this._isDrawing = false;
-        // this.planeService.nextEvent(new DrawEvent(this.activePlaneId, this.getDrawPoint(this._coordinates)));
-        // this.planeService.addDrawing(this.activePlaneId, this.getDrawPoint(this._coordinates));
         if (this.drawingMode === DrawingMode.ERASER) {
             const drawPoint = this.planeService.mergeDrawPoints(this.planeService.clearDrawCache());
-            // const firstCoordinate = drawPoint.nextCoordinates[0];
-            // drawPoint.nextCoordinates.unshift(firstCoordinate);
             this.planeService.nextEvent(new DrawEvent(this.activePlaneId, drawPoint));
-            // const nextDrawSlot = this.planeService.closeNextDrawSlot(this.activePlaneId);
-            // const difference = nextDrawSlot - this._lastDrawSlot;
-            // this.planeService.exchangeDrawingPoints(this.activePlaneId, drawPoints =>
-            //     drawPoints
-            //         .slice(0, this._lastDrawSlot)
-            //         .concat(this.planeService.mergeDrawPoints(drawPoints.splice(this._lastDrawSlot, difference)))
-            // );
         } else {
             this.planeService.nextEvent(new DrawEvent(this.activePlaneId, this.getDrawPoint(this._coordinates)));
         }
         this.planeService.clearPreviewEvent.next();
         this._coordinates = [];
-        this.planeService.nextSnapshotEvent(this.activePlaneId);
+        this.planeService.makeNextSnapshot(this.activePlaneId);
     }
 
     private getDrawPoint(nextCoordinates: Coordinate[]): DrawDescriptor {
