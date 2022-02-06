@@ -13,9 +13,23 @@ cdk-virtual-scroll-viewport {
     height: $size;
     max-height: $size;
     min-height: $size;
+    cursor: pointer;
 
     img {
         background: white;
+    }
+
+    &:hover {
+        background: rgba(0, 0, 0, 0.2);
+    }
+
+    &.active {
+        background: #00aaff;
+    }
+
+    &.lost {
+        color: rgba(0, 0, 0, 0.4);
+        font-style: italic;
     }
 }
 

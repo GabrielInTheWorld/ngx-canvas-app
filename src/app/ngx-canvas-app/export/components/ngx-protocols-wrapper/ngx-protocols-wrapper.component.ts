@@ -1,8 +1,36 @@
-import { Observable, Subject } from 'rxjs';
+import { Observable, BehaviorSubject } from 'rxjs';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { BaseComponent } from 'src/app/ngx-canvas-app/ui/base/base.component';
-import { DrawDescriptor, EventDescription, PlaneService } from 'src/app/ngx-canvas-app/ui/services/plane.service';
+import { EventDescription, PlaneService } from 'src/app/ngx-canvas-app/ui/services/plane.service';
 import { CdkVirtualScrollViewport } from '@angular/cdk/scrolling';
+
+enum ProtocolModuleState {
+    ACTIVE = 'active',
+    LOST = 'lost',
+    DEFAULT = 'default'
+}
+
+class ProtocolModule {
+    public readonly eventDescription: EventDescription;
+
+    public get isActive(): boolean {
+        return this._state === ProtocolModuleState.ACTIVE;
+    }
+
+    public get isLost(): boolean {
+        return this._state === ProtocolModuleState.LOST;
+    }
+
+    private _state: ProtocolModuleState = ProtocolModuleState.DEFAULT;
+
+    public constructor(description: EventDescription) {
+        this.eventDescription = description;
+    }
+
+    public setState(nextState: ProtocolModuleState): void {
+        this._state = nextState;
+    }
+}
 
 @Component({
     selector: 'ngx-protocols-wrapper',
@@ -10,21 +38,23 @@ import { CdkVirtualScrollViewport } from '@angular/cdk/scrolling';
     styleUrls: ['./ngx-protocols-wrapper.component.scss']
 })
 export class NgxProtocolsWrapperComponent extends BaseComponent implements OnInit {
-    public get currentPlaneDrawing(): DrawDescriptor[] {
-        return this.planeService.getFullDrawing(this.planeService.activePlane.value);
-    }
-
-    // private _currentPlaneId = 0
-    public get nextEventObservable(): Observable<EventDescription[]> {
-        return this.planeService.nextEventDescription.asObservable();
-    }
-
-    public get nextEventDescription(): Subject<EventDescription[]> {
-        return this.planeService.nextEventDescription;
+    public get protocolModulesObservable(): Observable<ProtocolModule[]> {
+        return this._protocolModulesSubject.asObservable();
     }
 
     @ViewChild(CdkVirtualScrollViewport)
     private _viewPort?: CdkVirtualScrollViewport;
+
+    private set _descriptions(value: EventDescription[]) {
+        this._eventDescriptionsSubject.next(value);
+    }
+
+    private get _descriptions(): EventDescription[] {
+        return this._eventDescriptionsSubject.value;
+    }
+
+    private _eventDescriptionsSubject = new BehaviorSubject<EventDescription[]>([]);
+    private _protocolModulesSubject = new BehaviorSubject<ProtocolModule[]>([]);
 
     public constructor(private planeService: PlaneService) {
         super();
@@ -32,12 +62,44 @@ export class NgxProtocolsWrapperComponent extends BaseComponent implements OnIni
 
     public ngOnInit(): void {
         this.subscriptions.push(
-            this.planeService.nextEventDescription.subscribe(descriptions => {
-                // console.log('incoming desccriptions', descriptions);
-                // console.log('height of viewport', this._viewPort?.getViewportSize());
-                this._viewPort?.scrollToOffset(descriptions.length * 30, 'smooth');
-                // this._viewPort?.scrollToIndex(descriptions.length - 1, 'smooth');
-            })
+            this.planeService.nextEventDescription.subscribe(descriptions => this.setEventDescriptions(descriptions))
         );
+    }
+
+    public onMouseEnterProtocolModule(index: number): void {
+        const lastIndex = this._protocolModulesSubject.value.length - 1;
+        for (let i = lastIndex; i > index; --i) {
+            this._protocolModulesSubject.value.at(i).setState(ProtocolModuleState.LOST);
+        }
+    }
+
+    public onMouseLeaveProtocolModule(index: number): void {
+        const lastIndex = this._protocolModulesSubject.value.length - 1;
+        for (let i = index; i < lastIndex; ++i) {
+            this._protocolModulesSubject.value.at(i).setState(ProtocolModuleState.DEFAULT);
+        }
+        this.setLastDescriptionToActive();
+    }
+
+    private setEventDescriptions(descriptions: EventDescription[]): void {
+        this._descriptions = descriptions;
+        this._protocolModulesSubject.next(descriptions.map(description => this.createProtocolModule(description)));
+        this.setLastDescriptionToActive();
+        this.scrollToBottom();
+    }
+
+    private createProtocolModule(description: EventDescription): ProtocolModule {
+        return new ProtocolModule(description);
+    }
+
+    private setLastDescriptionToActive(): void {
+        const lastProtocolModule = this._protocolModulesSubject.value.at(-1);
+        lastProtocolModule.setState(ProtocolModuleState.ACTIVE);
+    }
+
+    private scrollToBottom(): void {
+        const doScroll = () => this._viewPort?.scrollToOffset(this._descriptions.length * 30, 'auto');
+        setTimeout(() => doScroll(), 1);
+        setTimeout(() => doScroll(), 10);
     }
 }

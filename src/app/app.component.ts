@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { setupPolyfills } from './ngx-canvas-app/ui/libraries/polyfills';
 
 @Component({
     selector: 'app-root',
@@ -13,6 +14,7 @@ export class AppComponent {
     private currentLoop = new Date();
 
     public constructor() {
+        setupPolyfills();
         requestAnimationFrame(() => this.calculateFps());
     }
 

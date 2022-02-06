@@ -2,15 +2,26 @@
     <ngx-split-view-container>
         <cdk-virtual-scroll-viewport [itemSize]="30">
             <ng-container
-                *cdkVirtualFor="let point of nextEventDescription | async; let index = index; let last = last"
+                *cdkVirtualFor="
+                    let protocolModule of protocolModulesObservable | async;
+                    let index = index;
+                    let last = last
+                "
             >
-                <div class="protocol-module">
-                    <img [width]="30" [height]="30" [src]="point.snapshotSubject | async" />&nbsp;<span
-                        >{{ point.id }}: </span
-                    >&nbsp;
-                    <span>{{ point.type }}</span>
+                <div (mouseenter)="onMouseEnterProtocolModule(index)" (mouseleave)="onMouseLeaveProtocolModule(index)">
+                    <div
+                        class="protocol-module"
+                        [ngClass]="{ active: protocolModule.isActive, lost: protocolModule.isLost }"
+                    >
+                        <img
+                            [width]="30"
+                            [height]="30"
+                            [src]="protocolModule.eventDescription.snapshotSubject | async"
+                        />&nbsp;<span>{{ protocolModule.eventDescription.id }}: </span>&nbsp;
+                        <span>{{ protocolModule.eventDescription.type }}</span>
+                    </div>
+                    <mat-divider></mat-divider>
                 </div>
-                <mat-divider></mat-divider>
             </ng-container>
         </cdk-virtual-scroll-viewport>
         <mat-divider></mat-divider>
@@ -20,11 +31,11 @@
         </div>
     </ngx-split-view-container>
     <ngx-split-view-container>
-        <ng-container *ngFor="let point of currentPlaneDrawing; let last = last">
-            <!-- <div class="protocol-module">
+        <!-- <ng-container *ngFor="let point of currentPlaneDrawing; let last = last">
+            <div class="protocol-module">
                 <span>{{ point.mode }}</span>
             </div>
-            <mat-divider></mat-divider> -->
-        </ng-container>
+            <mat-divider></mat-divider>
+        </ng-container> -->
     </ngx-split-view-container>
 </ngx-split-view>
