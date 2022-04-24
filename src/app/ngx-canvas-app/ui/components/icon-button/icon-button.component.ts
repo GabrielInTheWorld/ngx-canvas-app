@@ -9,6 +9,9 @@ export class IconButtonComponent implements OnInit {
     @Input()
     public rotate: string = '0';
 
+    @Input()
+    public disabled = false;
+
     public constructor() {}
 
     public ngOnInit(): void {}

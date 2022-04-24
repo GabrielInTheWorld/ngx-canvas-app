@@ -38,6 +38,10 @@ class ProtocolModule {
     styleUrls: ['./ngx-protocols-wrapper.component.scss']
 })
 export class NgxProtocolsWrapperComponent extends BaseComponent implements OnInit {
+    public get isLastElementActive(): boolean {
+        return this._protocolModulesSubject.value.at(-1)?.isActive || this.isProtocolModulesStackEmpty;
+    }
+
     public get protocolModulesObservable(): Observable<ProtocolModule[]> {
         return this._protocolModulesSubject.asObservable();
     }
@@ -51,6 +55,10 @@ export class NgxProtocolsWrapperComponent extends BaseComponent implements OnIni
 
     private get _descriptions(): EventDescription[] {
         return this._eventDescriptionsSubject.value;
+    }
+
+    public get isProtocolModulesStackEmpty(): boolean {
+        return this._protocolModulesSubject.value.length === 0 || this._protocolModulesSubject.value.at(0)?.isLost;
     }
 
     private _eventDescriptionsSubject = new BehaviorSubject<EventDescription[]>([]);

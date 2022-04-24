@@ -3,15 +3,14 @@ import { Subscription } from 'rxjs';
 import { BasePlaneComponent } from '../../base/base-plane.component';
 import { PlaneService, Plane, DrawDescriptor, DrawingMode, Coordinate } from '../../services/plane.service';
 
+export class PlaneContext {}
+
 @Component({
     selector: 'ngx-plane',
     templateUrl: './plane.component.html',
     styleUrls: ['./plane.component.scss']
 })
 export class PlaneComponent extends BasePlaneComponent implements OnInit {
-    // @ViewChild('canvas')
-    // private canvas: ElementRef<HTMLCanvasElement> | null = null;
-
     @Input()
     public plane!: Plane;
 
