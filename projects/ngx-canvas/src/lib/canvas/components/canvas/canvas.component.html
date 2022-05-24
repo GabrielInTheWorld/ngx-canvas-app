@@ -1,0 +1,21 @@
+<div
+    class="app-canvas-wrapper"
+    [ngStyle]="{
+        width: width + 'px',
+        height: height + 'px'
+    }"
+    (mouseup)="onMouseUp()"
+    (mousedown)="onMouseDown()"
+    (pointermove)="onPointerMove($event)"
+>
+    <ngx-canvas-cursor-plane></ngx-canvas-cursor-plane>
+    <div class="content-wrapper" *ngIf="canvasObservable | async as canvas">
+        <ngx-canvas-preview-plane
+            [height]="canvas.height"
+            [width]="canvas.width"
+        ></ngx-canvas-preview-plane>
+        <ng-container *ngFor="let plane of canvas.planes | async">
+            <ngx-canvas-plane [plane]="plane"></ngx-canvas-plane>
+        </ng-container>
+    </div>
+</div>

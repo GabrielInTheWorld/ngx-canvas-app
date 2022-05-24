@@ -1,0 +1,9 @@
+<canvas
+    #canvas
+    [ngClass]="{
+        'is-not-visible': !isVisible
+    }"
+    [ngStyle]="{ zIndex: plane.index, backgroundColor: plane.backgroundColor }"
+    [width]="plane.width"
+    [height]="plane.height"
+></canvas>

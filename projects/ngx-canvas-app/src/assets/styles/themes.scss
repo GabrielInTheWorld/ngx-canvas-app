@@ -1,0 +1,19 @@
+@use "@angular/material" as mat;
+
+@import "../themes/ngx-canvas-dark.theme.scss";
+@import "../themes/ngx-canvas-light.theme.scss";
+
+@import "./shared-theme-styles.scss";
+
+@mixin ngx-canvas-style($theme) {
+    @include mat.all-component-themes($theme);
+    @include shared-theme-styles($theme);
+}
+
+.ngx-canvas-light-theme {
+    @include ngx-canvas-style($ngx-canvas-light-theme);
+}
+
+.ngx-canvas-dark-theme {
+    @include ngx-canvas-style($ngx-canvas-dark-theme);
+}

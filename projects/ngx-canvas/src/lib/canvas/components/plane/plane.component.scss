@@ -1,0 +1,7 @@
+canvas {
+    position: absolute;
+
+    &.is-not-visible {
+        display: none;
+    }
+}

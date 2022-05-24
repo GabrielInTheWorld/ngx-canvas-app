@@ -1,0 +1,7 @@
+@use "@angular/material" as mat;
+
+$primary: mat.define-palette(mat.$indigo-palette);
+$accent: mat.define-palette(mat.$pink-palette);
+$warn: mat.define-palette(mat.$amber-palette);
+
+$ngx-canvas-light-theme: mat.define-light-theme($primary, $accent, $warn);
