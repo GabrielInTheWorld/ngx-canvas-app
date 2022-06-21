@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { NgxCanvasServiceModule } from './canvas-service.module';
-import { Observable, BehaviorSubject } from 'rxjs';
-import { CanvasDescription, CanvasDescriptor } from '../definitions/canvas';
+import { Observable, BehaviorSubject, Subject } from 'rxjs';
+import { CanvasDescription, CanvasDescriptor, Plane } from '../definitions';
 
 @Injectable({
     providedIn: NgxCanvasServiceModule,
@@ -9,6 +9,11 @@ import { CanvasDescription, CanvasDescriptor } from '../definitions/canvas';
 export class NgxCanvasService {
     private readonly _currentCanvasSubject =
         new BehaviorSubject<CanvasDescriptor | null>(null);
+
+    public readonly canvasResized = new Subject<{
+        width: number;
+        height: number;
+    }>();
 
     public addCanvas(canvasDescription: CanvasDescription): void {
         if (!this._currentCanvasSubject.value) {
@@ -18,7 +23,17 @@ export class NgxCanvasService {
         }
     }
 
-    public addPlane(amount: number = 1): void {}
+    public getCanvas(): CanvasDescriptor | null {
+        return this._currentCanvasSubject.value;
+    }
+
+    public addPlane(amount: number = 1): void {
+        this.getCanvas()?.addPlane();
+    }
+
+    public getPlane(planeId: number): Plane | undefined {
+        return this.getCanvas()?.getPlane(planeId);
+    }
 
     public getCanvasObservable(): Observable<CanvasDescriptor | null> {
         return this._currentCanvasSubject.asObservable();

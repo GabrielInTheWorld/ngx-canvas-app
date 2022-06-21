@@ -1,23 +1,10 @@
 import { Injectable } from '@angular/core';
 import { NgxCanvasServiceModule } from './canvas-service.module';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
-import {
-    Coordinate,
-    DrawingMode,
-    DrawPoint,
-    PlaneDescription,
-} from '../definitions';
+import { Coordinate, DrawingMode, DrawPoint } from '../definitions';
 import { PlaneComponent } from '../components/plane/plane.component';
 import { PointerService } from './pointer.service';
-
-const BACKGROUND_PLANE: PlaneDescription = {
-    // id: 0,
-    width: 600,
-    height: 600,
-    visible: true,
-    index: 0,
-    isBackground: true,
-};
+import { NgxCanvasService } from './canvas.service';
 
 @Injectable({
     providedIn: NgxCanvasServiceModule,
@@ -25,11 +12,7 @@ const BACKGROUND_PLANE: PlaneDescription = {
 export class PlaneService {
     public readonly planeComponents: { [planeId: number]: PlaneComponent } = {};
 
-    // public readonly planes = new BehaviorSubject<PlaneDescription[]>([
-    //     BACKGROUND_PLANE,
-    // ]);
-
-    public readonly activePlane = new BehaviorSubject<number>(0);
+    public readonly activePlaneIdChanged = new BehaviorSubject<number>(0);
 
     public readonly drawingModeChanged = new BehaviorSubject<DrawingMode>(
         DrawingMode.PEN
@@ -43,14 +26,17 @@ export class PlaneService {
         return this._drawing.asObservable();
     }
 
-    public constructor(private pointerService: PointerService) {}
-
     private readonly _drawing = new Subject<DrawPoint>();
     // private readonly _currentPlaneState: {
     //     [planeId: number]: BehaviorSubject<string>;
     // } = {};
     private _globalStore: { [id: number]: DrawPoint[] } = {};
     // private _nextId = 1;
+
+    public constructor(
+        private pointerService: PointerService,
+        private canvasService: NgxCanvasService
+    ) {}
 
     /**
      * Function to add new planes to the global plane store.
@@ -130,11 +116,13 @@ export class PlaneService {
     }
 
     public addDrawing(planeId: number, drawing: DrawPoint): void {
-        if (this._globalStore[planeId]) {
-            this._globalStore[planeId].push(drawing);
-        } else {
-            this._globalStore[planeId] = [drawing];
-        }
+        // console.log(`addDrawing`, planeId, drawing);
+        // if (this._globalStore[planeId]) {
+        //     this._globalStore[planeId].push(drawing);
+        // } else {
+        //     this._globalStore[planeId] = [drawing];
+        // }
+        this.canvasService.getPlane(planeId)?.addDrawPoint(drawing);
         this._drawing.next(drawing);
     }
 

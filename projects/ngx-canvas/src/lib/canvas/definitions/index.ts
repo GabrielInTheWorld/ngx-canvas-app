@@ -9,17 +9,20 @@ export enum DrawingMode {
     CIRCLE = 'circle',
 }
 
-export interface PlaneDescription {
+export interface PlaneCreateConfig {
+    index: number;
+    visible: boolean;
+    backgroundColor?: string;
+}
+
+export interface PlaneDescription extends PlaneCreateConfig {
     // id: number;
     width: number;
     height: number;
-    visible: boolean;
-    index: number;
     /**
      * @deprecated: Instead use the `backgroundColor` directly
      */
     isBackground: boolean;
-    backgroundColor?: string;
 }
 
 export interface Coordinate {

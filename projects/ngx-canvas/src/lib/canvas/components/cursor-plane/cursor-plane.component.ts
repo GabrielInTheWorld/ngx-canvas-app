@@ -26,9 +26,12 @@ export class CursorPlaneComponent extends BaseUiComponent implements OnInit {
         host: ElementRef<HTMLElement>
     ) {
         super();
-        const { width, height } = host.nativeElement.getBoundingClientRect();
-        this.ngxWidth = width;
-        this.ngxHeight = height;
+        new ResizeObserver(() => {
+            const { width, height } =
+                host.nativeElement.getBoundingClientRect();
+            this.ngxWidth = width;
+            this.ngxHeight = height;
+        }).observe(host.nativeElement);
     }
 
     public ngOnInit(): void {

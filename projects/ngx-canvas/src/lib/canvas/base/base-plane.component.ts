@@ -1,7 +1,7 @@
-import { Directive } from '@angular/core';
 import { Coordinate, DrawPoint } from '../definitions';
 import { SubscriptionMap } from '../../subscription-map';
 import { PointerService } from '../services/pointer.service';
+import { NgxCanvasService } from '../services/canvas.service';
 
 export interface RectParams {
     width: number;
@@ -21,11 +21,20 @@ export class BasePlaneComponent {
 
     protected readonly subscriptions = new SubscriptionMap();
 
-    public constructor(protected pointerService: PointerService) {
+    private _screenX = 0;
+    private _screenY = 0;
+
+    private _canvas: HTMLCanvasElement | null = null;
+
+    public constructor(
+        protected pointerService: PointerService,
+        protected canvasService: NgxCanvasService
+    ) {
         this.subscriptions.push(
             pointerService.pipedMoveEvent.subscribe(
                 (nextPoint) => (this.previousPoint = nextPoint)
-            )
+            ),
+            canvasService.canvasResized.subscribe((event) => this.resize())
         );
     }
 
@@ -38,8 +47,14 @@ export class BasePlaneComponent {
             this.context!.globalCompositeOperation = 'source-over';
             this.context!.lineWidth = this.lineWidth;
             this.context?.beginPath();
-            this.context?.moveTo(firstPoint.x, firstPoint.y);
-            this.context?.lineTo(coordinate.x, coordinate.y);
+            this.context?.moveTo(
+                firstPoint.x - this._screenX,
+                firstPoint.y - this._screenY
+            );
+            this.context?.lineTo(
+                coordinate.x - this._screenX,
+                coordinate.y - this._screenY
+            );
             this.context?.closePath();
             this.context?.stroke();
             firstPoint = coordinate;
@@ -97,11 +112,23 @@ export class BasePlaneComponent {
         };
     }
 
+    protected setCanvas(canvas: HTMLCanvasElement): void {
+        this.context = canvas.getContext(`2d`);
+        this._canvas = canvas;
+        this.resize();
+    }
+
     protected getFirstCoordinate(_point: DrawPoint): Coordinate {
         return this.previousPoint;
     }
 
     protected getLastCoordinate(_point: DrawPoint): Coordinate {
         return _point.nextCoordinates[_point.nextCoordinates.length - 1];
+    }
+
+    private resize(): void {
+        const { x, y } = this._canvas!.getBoundingClientRect();
+        this._screenX = x;
+        this._screenY = y;
     }
 }

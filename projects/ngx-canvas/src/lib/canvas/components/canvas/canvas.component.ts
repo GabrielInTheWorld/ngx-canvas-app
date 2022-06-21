@@ -1,10 +1,9 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, ViewChild, ElementRef } from '@angular/core';
 import {
     CanvasDescriptor,
     Coordinate,
     DrawingMode,
     DrawPoint,
-    PlaneDescription,
 } from '../../definitions';
 import { PlaneService } from '../../services/plane.service';
 import { Observable } from 'rxjs';
@@ -32,6 +31,15 @@ export class CanvasComponent implements OnInit {
     @Input()
     public color = DEFAULT_FOREGROUND_COLOR;
 
+    @ViewChild(`ngxCanvasWrapper`)
+    private set _ngxCanvasWrapper(element: ElementRef<HTMLElement>) {
+        const { nativeElement } = element;
+        new ResizeObserver(() => {
+            const { width, height } = nativeElement.getBoundingClientRect();
+            this.canvasService.canvasResized.next({ width, height });
+        }).observe(nativeElement);
+    }
+
     public get canvasObservable(): Observable<CanvasDescriptor | null> {
         return this.canvasService.getCanvasObservable();
     }
@@ -41,7 +49,7 @@ export class CanvasComponent implements OnInit {
     }
 
     private get activePlaneId(): number {
-        return this.planeService.activePlane.value;
+        return this.planeService.activePlaneIdChanged.value;
     }
 
     private _isDrawing = false;
@@ -68,23 +76,21 @@ export class CanvasComponent implements OnInit {
         }
     }
 
-    public onMouseDown(): void {
+    public onPointerDown(event: PointerEvent): void {
         this._isDrawing = true;
         if (this.drawingMode === DrawingMode.ERASER) {
             this._lastDrawSlot = this.planeService.getNextDrawSlot(
                 this.activePlaneId
             );
         }
+        const coordinate = this.getCoordinate(event);
+        this.draw(coordinate);
     }
 
     public onPointerMove(event: PointerEvent): void {
-        const coordinate = { x: event.offsetX, y: event.offsetY };
+        const coordinate = this.getCoordinate(event);
         this.cursorPlane.pointerMoved.next(coordinate);
-        if (this._isDrawing) {
-            this.onDraw(coordinate);
-        } else {
-            this.pointerService.pipedMoveEvent.next(coordinate);
-        }
+        this.draw(coordinate);
     }
 
     public onMouseUp(): void {
@@ -122,6 +128,10 @@ export class CanvasComponent implements OnInit {
         // );
     }
 
+    private getCoordinate(event: PointerEvent): Coordinate {
+        return { x: event.offsetX, y: event.offsetY };
+    }
+
     private getDrawPoint(nextCoordinates: Coordinate[]): DrawPoint {
         return {
             nextCoordinates,
@@ -130,12 +140,20 @@ export class CanvasComponent implements OnInit {
         };
     }
 
+    private draw(coordinate: Coordinate): void {
+        if (this._isDrawing) {
+            this.onDraw(coordinate);
+        } else {
+            this.pointerService.pipedMoveEvent.next(coordinate);
+        }
+    }
+
     private onBeforeDraw(): void {
         switch (this.drawingMode) {
             case DrawingMode.CIRCLE:
             case DrawingMode.RECTANGLE:
                 const id = this.planeService.addPlane();
-                this.planeService.activePlane.next(id);
+                this.planeService.activePlaneIdChanged.next(id);
                 break;
         }
     }

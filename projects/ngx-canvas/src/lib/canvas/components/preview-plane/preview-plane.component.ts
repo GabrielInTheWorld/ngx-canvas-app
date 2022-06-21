@@ -11,6 +11,7 @@ import { DrawingMode, DrawPoint } from '../../definitions';
 import { Observable, BehaviorSubject } from 'rxjs';
 import { Input } from '@angular/core';
 import { PointerService } from '../../services/pointer.service';
+import { NgxCanvasService } from '../../services/canvas.service';
 
 @Component({
     selector: 'ngx-canvas-preview-plane',
@@ -34,9 +35,10 @@ export class PreviewPlaneComponent
 
     constructor(
         pointerService: PointerService,
+        canvasService: NgxCanvasService,
         private planeService: PreviewPlaneService
     ) {
-        super(pointerService);
+        super(pointerService, canvasService);
     }
 
     ngOnInit(): void {
@@ -53,7 +55,12 @@ export class PreviewPlaneComponent
 
     public ngAfterViewInit(): void {
         if (this._previewCanvas?.nativeElement) {
-            this.context = this._previewCanvas.nativeElement.getContext('2d');
+            // this.context = this._previewCanvas.nativeElement.getContext('2d');
+            // const { x, y } =
+            //     this._previewCanvas.nativeElement.getBoundingClientRect();
+            // this._screenX = x;
+            // this._screenY = y;
+            this.setCanvas(this._previewCanvas.nativeElement);
         }
     }
 

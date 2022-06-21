@@ -1,4 +1,4 @@
-import { PlaneDescription } from './index';
+import { PlaneCreateConfig, PlaneDescription } from './index';
 import { Plane } from './plane';
 import { BehaviorSubject } from 'rxjs';
 
@@ -21,12 +21,6 @@ export class CanvasDescriptor implements CanvasDescription {
     private _planeStore: { [planeId: number]: Plane } = {};
 
     public constructor(description: CanvasDescription) {
-        // this.backgroundColor = backgroundColor
-        // this.width = width
-        // this.height = height
-        // for (const key in description) {
-        //     this[`${key as keyof CanvasDescription}`]= description[key]
-        // }
         Object.assign(this, description);
         this.addPlane({ backgroundColor: this.backgroundColor, index: 0 });
     }
@@ -37,18 +31,17 @@ export class CanvasDescriptor implements CanvasDescription {
      * @param planeDescription Some config values for the next plane to add
      * @returns The id of the added plane
      */
-    public addPlane(planeDescription: Partial<PlaneDescription>): number {
-        const nextId = ++this._localPlaneCount;
+    public addPlane(planeDescription: Partial<PlaneCreateConfig> = {}): number {
+        const nextId = this._localPlaneCount++;
         this._planeStore[nextId] = new Plane({
             id: nextId,
-            width: planeDescription.width || this.width,
-            height: planeDescription.height || this.height,
+            width: this.width,
+            height: this.height,
             index: planeDescription.index || nextId,
-            isBackground: planeDescription.isBackground || false,
+            isBackground: false,
             visible: planeDescription.visible || true,
             backgroundColor: planeDescription.backgroundColor,
         });
-        console.log(`addPlane:`, this._planeStore);
         this.planes.next(Object.values(this._planeStore));
         return nextId;
     }
