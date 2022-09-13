@@ -3,17 +3,23 @@ import { NgxCanvasServiceModule } from './canvas-service.module';
 import { Observable, BehaviorSubject, Subject } from 'rxjs';
 import { CanvasDescription, CanvasDescriptor, Plane } from '../definitions';
 
+interface HtmlElementDimensions {
+    width: number;
+    height: number;
+}
+
 @Injectable({
     providedIn: NgxCanvasServiceModule,
 })
 export class NgxCanvasService {
+    public readonly canvasViewPortResized =
+        new Subject<HtmlElementDimensions>();
+
+    public readonly canvasPlaneHandlerResized =
+        new Subject<HtmlElementDimensions>();
+
     private readonly _currentCanvasSubject =
         new BehaviorSubject<CanvasDescriptor | null>(null);
-
-    public readonly canvasResized = new Subject<{
-        width: number;
-        height: number;
-    }>();
 
     public addCanvas(canvasDescription: CanvasDescription): void {
         if (!this._currentCanvasSubject.value) {

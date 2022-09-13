@@ -21,6 +21,10 @@ export class BasePlaneComponent {
 
     protected readonly subscriptions = new SubscriptionMap();
 
+    private get scaleFactor(): number {
+        return this.pointerService.scaleFactorChanged.value;
+    }
+
     private _screenX = 0;
     private _screenY = 0;
 
@@ -34,7 +38,8 @@ export class BasePlaneComponent {
             pointerService.pipedMoveEvent.subscribe(
                 (nextPoint) => (this.previousPoint = nextPoint)
             ),
-            canvasService.canvasResized.subscribe((event) => this.resize())
+            pointerService.scaleFactorChanged.subscribe(() => this.resize()),
+            canvasService.canvasViewPortResized.subscribe(() => this.resize())
         );
     }
 
@@ -48,12 +53,12 @@ export class BasePlaneComponent {
             this.context!.lineWidth = this.lineWidth;
             this.context?.beginPath();
             this.context?.moveTo(
-                firstPoint.x - this._screenX,
-                firstPoint.y - this._screenY
+                (firstPoint.x - this._screenX) / this.scaleFactor,
+                (firstPoint.y - this._screenY) / this.scaleFactor
             );
             this.context?.lineTo(
-                coordinate.x - this._screenX,
-                coordinate.y - this._screenY
+                (coordinate.x - this._screenX) / this.scaleFactor,
+                (coordinate.y - this._screenY) / this.scaleFactor
             );
             this.context?.closePath();
             this.context?.stroke();
@@ -127,8 +132,10 @@ export class BasePlaneComponent {
     }
 
     private resize(): void {
-        const { x, y } = this._canvas!.getBoundingClientRect();
-        this._screenX = x;
-        this._screenY = y;
+        if (this._canvas) {
+            const { x, y } = this._canvas.getBoundingClientRect();
+            this._screenX = x;
+            this._screenY = y;
+        }
     }
 }

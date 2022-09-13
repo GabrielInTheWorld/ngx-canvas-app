@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { DOCUMENT } from '@angular/common';
+import { Component, Inject, OnInit } from '@angular/core';
 
 @Component({
     selector: 'ngx-canvas',
@@ -6,7 +7,9 @@ import { Component, OnInit } from '@angular/core';
     styles: [],
 })
 export class NgxCanvasComponent implements OnInit {
-    constructor() {}
+    public constructor(@Inject(DOCUMENT) document: Document) {
+        document.oncontextmenu = () => false;
+    }
 
     ngOnInit(): void {}
 }

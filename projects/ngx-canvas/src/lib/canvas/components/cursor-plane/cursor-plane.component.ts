@@ -2,6 +2,10 @@ import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { BaseUiComponent } from '../../../base-ui-component';
 import { Coordinate } from '../../definitions';
 import { CursorPlaneService } from '../../services/cursor-plane.service';
+import {
+    DEFAULT_COORDINATE,
+    PointerService,
+} from '../../services/pointer.service';
 
 @Component({
     selector: 'ngx-canvas-cursor-plane',
@@ -18,11 +22,17 @@ export class CursorPlaneComponent extends BaseUiComponent implements OnInit {
     public ngxWidth = 600;
     public ngxHeight = 600;
 
+    private get currentScaleFactor(): number {
+        return this.pointerService.scaleFactorChanged.value;
+    }
+
     private _canvas!: HTMLCanvasElement;
     private _context: CanvasRenderingContext2D | null = null;
+    private _lastCoordinate: Coordinate = DEFAULT_COORDINATE;
 
     public constructor(
         private planeService: CursorPlaneService,
+        private pointerService: PointerService,
         host: ElementRef<HTMLElement>
     ) {
         super();
@@ -38,17 +48,41 @@ export class CursorPlaneComponent extends BaseUiComponent implements OnInit {
         this.subscriptions.push(
             this.planeService.pointerMoved.subscribe((coordinate) =>
                 this.onMoveEvent(coordinate)
-            )
+            ),
+            this.planeService.pointerVisibilityChanged.subscribe((isVisible) =>
+                this.onVisibilityChanged(isVisible)
+            ),
+            this.pointerService.scaleFactorChanged.subscribe(() => {
+                this.clearCanvas();
+                this.drawCursor(this._lastCoordinate);
+            })
         );
+    }
+
+    private clearCanvas(): void {
+        if (this._context) {
+            this._context.clearRect(0, 0, this.ngxWidth, this.ngxHeight);
+        }
+    }
+
+    private onVisibilityChanged(isVisible: boolean): void {
+        if (!isVisible) {
+            this.clearCanvas();
+        }
     }
 
     private onMoveEvent(coordinate: Coordinate): void {
         if (this._context) {
-            this._context.clearRect(0, 0, this.ngxWidth, this.ngxHeight);
-            this.drawCircle(coordinate, 15, '#ff0');
-            this.drawCircle(coordinate, 16);
-            this.drawCircle(coordinate, 17, '#ff0');
+            this.clearCanvas();
+            this._lastCoordinate = coordinate;
+            this.drawCursor(this._lastCoordinate);
         }
+    }
+
+    private drawCursor(coordinate: Coordinate): void {
+        this.drawCircle(coordinate, 15 * this.currentScaleFactor, '#ff0');
+        this.drawCircle(coordinate, 16 * this.currentScaleFactor);
+        this.drawCircle(coordinate, 17 * this.currentScaleFactor, '#ff0');
     }
 
     private drawCircle(

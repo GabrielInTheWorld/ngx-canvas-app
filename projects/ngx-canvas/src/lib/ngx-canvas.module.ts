@@ -1,16 +1,9 @@
 import { NgModule } from '@angular/core';
 import { NgxCanvasComponent } from './ngx-canvas.component';
 
-
-
 @NgModule({
-  declarations: [
-    NgxCanvasComponent
-  ],
-  imports: [
-  ],
-  exports: [
-    NgxCanvasComponent
-  ]
+    declarations: [NgxCanvasComponent],
+    imports: [],
+    exports: [NgxCanvasComponent],
 })
-export class NgxCanvasModule { }
+export class NgxCanvasModule {}

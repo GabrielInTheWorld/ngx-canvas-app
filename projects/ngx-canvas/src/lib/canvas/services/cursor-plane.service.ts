@@ -7,5 +7,6 @@ import { Coordinate } from '../definitions';
     providedIn: NgxCanvasServiceModule,
 })
 export class CursorPlaneService {
+    public readonly pointerVisibilityChanged = new Subject<boolean>();
     public readonly pointerMoved = new Subject<Coordinate>();
 }
