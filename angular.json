@@ -141,5 +141,7 @@
             }
         }
     },
-    "defaultProject": "ngx-canvas"
+    "cli": {
+      "analytics": false
+    }
 }
