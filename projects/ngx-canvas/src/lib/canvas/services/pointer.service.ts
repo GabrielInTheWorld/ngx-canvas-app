@@ -13,7 +13,7 @@ const DEFAULT_SCALE_FACTOR = 1.0;
 })
 export class PointerService {
     /**
-     * @deprecated: Unclear which usage and which name
+     * @deprecated: This event is used to get the pointers current position, when not drawing
      */
     public readonly pipedMoveEvent = new BehaviorSubject(DEFAULT_COORDINATE);
 
