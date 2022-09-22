@@ -1,0 +1,29 @@
+{
+    "asar": false,
+    "directories": {
+        "output": "release/"
+    },
+    "files": [
+        "electron",
+        "node_modules/rxjs",
+        "node_modules/tslib",
+        "!node_modules/zone.js",
+        "!node_modules/@angular",
+        "!**/*.ts",
+        "!*.map",
+        "!package.json",
+        "!package-lock.json",
+        { "from": "dist/backend", "to": "dist/backend" },
+        { "from": "dist/ngx-canvas-app", "to": "dist/frontend" }
+    ],
+    "win": {
+        "target": ["portable"]
+    },
+    "portable": {},
+    "mac": {
+        "target": ["dmg"]
+    },
+    "linux": {
+        "target": ["AppImage"]
+    }
+}
