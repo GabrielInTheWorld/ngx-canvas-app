@@ -1,7 +1,8 @@
 {
-    "asar": false,
+    "productName": "The ngx-canvas-app",
+    "asar": true,
     "directories": {
-        "output": "release/"
+        "output": ".release/"
     },
     "files": [
         "electron",
@@ -16,10 +17,19 @@
         { "from": "dist/backend", "to": "dist/backend" },
         { "from": "dist/ngx-canvas-app", "to": "dist/frontend" }
     ],
+    "publish": [
+        {
+            "provider": "github",
+            "releaseType": "release"
+        }
+    ],
     "win": {
-        "target": ["portable"]
+        "target": ["portable", "nsis"]
     },
-    "portable": {},
+    "nsis": {
+        "oneClick": false,
+        "allowToChangeInstallationDirectory": true
+    },
     "mac": {
         "target": ["dmg"]
     },

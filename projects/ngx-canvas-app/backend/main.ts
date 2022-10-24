@@ -3,6 +3,7 @@ import * as path from 'path';
 import * as fs from 'fs';
 import * as url from 'url';
 import { WindowManager } from './infrastructure/window-manager';
+import { autoUpdater } from 'electron-updater';
 
 let win: BrowserWindow | null = null;
 const args = process.argv.slice(1),
@@ -63,7 +64,12 @@ try {
     // initialization and is ready to create browser windows.
     // Some APIs can only be used after this event occurs.
     // Added 400 ms to fix the black background issue while using transparent window. More detais at https://github.com/electron/electron/issues/15947
-    app.on('ready', () => setTimeout(() => WindowManager.addWindow(createWindow()), 400));
+    app.on('ready', () =>
+        setTimeout(() => {
+            autoUpdater.checkForUpdatesAndNotify();
+            WindowManager.addWindow(createWindow());
+        }, 400)
+    );
 
     // Quit when all windows are closed.
     app.on('window-all-closed', () => {
@@ -73,10 +79,10 @@ try {
             app.quit();
         }
     });
-
     app.on('activate', () => {
         // On OS X it's common to re-create a window in the app when the
         // dock icon is clicked and there are no other windows open.
+
         if (win === null) {
             WindowManager.addWindow(createWindow());
         }

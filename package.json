@@ -1,7 +1,11 @@
 {
     "name": "ngx-canvas-app",
-    "version": "0.0.0",
+    "version": "v0.0.0",
     "main": "dist/backend/main.js",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/GabrielInTheWorld/ngx-canvas-app.git"
+    },
     "scripts": {
         "ng": "ng",
         "start": "ng serve",
@@ -13,7 +17,7 @@
         "electron:dev": "wait-on tcp:4200 && electron . --serve --trace-warnings",
         "electron": "run-s electron:tsc electron:dev",
         "electron:watch": "run-p start electron",
-        "pack": "npm run build -- -c production && electron-builder build --config=projects/ngx-canvas-app/electron-builder.json --publish=never"
+        "pack": "npm run build -- -c production && electron-builder build --config=projects/ngx-canvas-app/electron-builder.json --publish=always"
     },
     "private": true,
     "dependencies": {
@@ -27,6 +31,7 @@
         "@angular/platform-browser": "^14.2.1",
         "@angular/platform-browser-dynamic": "^14.2.1",
         "@angular/router": "^14.2.1",
+        "electron-updater": "^5.3.0",
         "rxjs": "~7.5.0",
         "tslib": "^2.3.0",
         "zone.js": "~0.11.4"
