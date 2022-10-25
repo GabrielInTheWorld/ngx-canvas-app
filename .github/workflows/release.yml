@@ -1,6 +1,9 @@
 name: Make a release
 
-on: workflow_dispatch
+on:
+    push:
+        tags:
+            - 'v**'
 
 jobs:
     release:
