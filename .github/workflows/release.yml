@@ -1,6 +1,6 @@
 name: Make a release
 
-on: workflow_dispatch
+on: [workflow_dispatch, releases]
 
 jobs:
     release:
