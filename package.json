@@ -2,7 +2,7 @@
     "name": "ngx-canvas-app",
     "author": "GabrielInTheWorld",
     "description": "An app to just take a pencil and draw",
-    "version": "v0.0.0",
+    "version": "v0.0.1",
     "main": "dist/backend/main.js",
     "repository": {
         "type": "git",
