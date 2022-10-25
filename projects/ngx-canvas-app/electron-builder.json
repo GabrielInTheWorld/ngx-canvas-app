@@ -1,5 +1,5 @@
 {
-    "productName": "The ngx-canvas-app",
+    "productName": "The Canvas",
     "asar": true,
     "directories": {
         "output": ".release/"

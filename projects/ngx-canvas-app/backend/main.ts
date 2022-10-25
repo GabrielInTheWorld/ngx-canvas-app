@@ -1,9 +1,12 @@
-import { app, BrowserWindow, ipcMain, screen } from 'electron';
+import { app, BrowserWindow, Menu, screen } from 'electron';
 import * as path from 'path';
 import * as fs from 'fs';
 import * as url from 'url';
 import { WindowManager } from './infrastructure/window-manager';
-import { autoUpdater } from 'electron-updater';
+import { createMenu } from './infrastructure/menu-manager';
+
+// installing auto-updater
+require(`update-electron-app`)();
 
 let win: BrowserWindow | null = null;
 const args = process.argv.slice(1),
@@ -59,6 +62,32 @@ function createWindow(): BrowserWindow {
     return win;
 }
 
+// function sendStatusToWindow(message: string): void {
+//     win?.webContents.send(`message`, message);
+// }
+
+// autoUpdater.on('checking-for-update', () => {
+//     sendStatusToWindow('Checking for update...');
+// });
+// autoUpdater.on('update-available', () => {
+//     sendStatusToWindow('Update available.');
+// });
+// autoUpdater.on('update-not-available', () => {
+//     sendStatusToWindow('Update not available.');
+// });
+// autoUpdater.on('error', err => {
+//     sendStatusToWindow('Error in auto-updater. ' + err);
+// });
+// autoUpdater.on('download-progress', progressObj => {
+//     let log_message = 'Download speed: ' + progressObj.bytesPerSecond;
+//     log_message = log_message + ' - Downloaded ' + progressObj.percent + '%';
+//     log_message = log_message + ' (' + progressObj.transferred + '/' + progressObj.total + ')';
+//     sendStatusToWindow(log_message);
+// });
+// autoUpdater.on('update-downloaded', info => {
+//     sendStatusToWindow('Update downloaded');
+// });
+
 try {
     // This method will be called when Electron has finished
     // initialization and is ready to create browser windows.
@@ -66,7 +95,11 @@ try {
     // Added 400 ms to fix the black background issue while using transparent window. More detais at https://github.com/electron/electron/issues/15947
     app.on('ready', () =>
         setTimeout(() => {
-            autoUpdater.checkForUpdatesAndNotify();
+            // Create menu and set it
+            Menu.setApplicationMenu(createMenu());
+
+            // autoUpdater.checkForUpdates();
+
             WindowManager.addWindow(createWindow());
         }, 400)
     );
@@ -92,6 +125,6 @@ try {
     // throw e;
 }
 
-ipcMain.handle(`hello`, (event, args) => {
-    console.log(`got on ipcMain`, args);
-});
+// ipcMain.handle(`hello`, (event, args) => {
+//     console.log(`got on ipcMain`, args);
+// });
